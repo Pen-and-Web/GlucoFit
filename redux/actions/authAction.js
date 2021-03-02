@@ -160,3 +160,46 @@ export const editUser = ({
     }
   };
 };
+
+export const resetPassword = ({ email }) => {
+  return async (dispatch) => {
+    // logic to make a post to LOGIN the user
+
+    try {
+      const result = await fetch(`${BASE_URL}/api/auth/recover`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
+      console.log(await result.json());
+
+      // if (result.status === 200) {
+      //   console.log("200");
+      //   let token = await result.json();
+      //   let decodedData = jwt_decode(token);
+      //   console.log("Decoded :", decodedData);
+      //   dispatch({
+      //     type: LOGIN_USER_SUCCESS,
+      //     payload: { decodedData: decodedData, token: token },
+      //   });
+      //   return { decodedData: decodedData, token: token };
+      // } else {
+      //   console.log("400");
+      //   dispatch({
+      //     type: LOGIN_USER_FAIL,
+      //   });
+      //   return null;
+      // }
+    } catch (error) {
+      console.error(error);
+    }
+
+    // const resultData = JSON.stringify(result);
+    // console.log(resultData);
+  };
+};

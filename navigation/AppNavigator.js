@@ -11,6 +11,7 @@ import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import MenuScreen from "../screens/MenuScreen";
 import EditDetails from "../screens/EditDetails";
+import ResetPassword from "../screens/ResetPassword";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -70,6 +71,11 @@ function AppNavigator() {
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="Reset Password"
+          component={ResetPassword}
           options={{ headerShown: true }}
         />
         <Stack.Screen

@@ -117,7 +117,9 @@ const LoginScreen = (navData) => {
             >
               <Text style={styles.loginText}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navData.navigation.navigate("Reset Password")}
+            >
               <Text style={styles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
             <View style={styles.registerContainer}>
