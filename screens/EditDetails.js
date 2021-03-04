@@ -80,7 +80,7 @@ const EditDetails = (navData) => {
         email: "",
         password: "",
         diabetic_type: "non-diabetic",
-        target_glucoce_level: 1,
+        target_glucose_level: 1,
         isStudent: false,
         insulinDependent: false,
         dailyStepGoal: 0,
@@ -93,7 +93,7 @@ const EditDetails = (navData) => {
         email,
         password,
         diabetic_type,
-        target_glucoce_level,
+        target_glucose_level,
         isStudent,
         insulinDependent,
         dailyStepGoal,
@@ -108,7 +108,7 @@ const EditDetails = (navData) => {
             email,
             password,
             diabetic_type,
-            target_glucoce_level,
+            target_glucose_level,
             isStudent,
             insulinDependent,
             dailyStepGoal,
@@ -187,11 +187,11 @@ const EditDetails = (navData) => {
                       //console.log("My state is: ", checked);
                       if (checkDiabeticYes) {
                         //props.handleChange("diabetic");
-                        props.setFieldValue("diabetic_type", "diabetic");
+                        props.setFieldValue("diabetic_type", "non-diabetic");
                         setCheckDiabeticYes(false);
                         setCheckDiabeticNo(true);
                       } else {
-                        props.setFieldValue("diabetic_type", "non-diabetic");
+                        props.setFieldValue("diabetic_type", "diabetic");
                         setCheckDiabeticYes(true);
                         setCheckDiabeticNo(false);
                       }
@@ -210,11 +210,11 @@ const EditDetails = (navData) => {
                       //console.log("My state is: ", checked);
                       if (!checkDiabeticNo) {
                         //props.handleChange("diabetic");
-                        props.setFieldValue("diabetic_type", "diabetic");
+                        props.setFieldValue("diabetic_type", "non-diabetic");
                         setCheckDiabeticNo(true);
                         setCheckDiabeticYes(false);
                       } else {
-                        props.setFieldValue("diabetic_type", "non-diabetic");
+                        props.setFieldValue("diabetic_type", "diabetic");
                         setCheckDiabeticNo(false);
                         setCheckDiabeticYes(true);
                       }
@@ -256,11 +256,11 @@ const EditDetails = (navData) => {
                       //console.log("My state is: ", checked);
                       if (checkStudentYes) {
                         //props.handleChange("student");
-                        props.setFieldValue("isStudent", true);
+                        props.setFieldValue("isStudent", false);
                         setCheckStudentYes(false);
                         setCheckStudentNo(true);
                       } else {
-                        props.setFieldValue("isStudent", false);
+                        props.setFieldValue("isStudent", true);
                         setCheckStudentYes(true);
                         setCheckStudentNo(false);
                       }
@@ -279,11 +279,11 @@ const EditDetails = (navData) => {
                       //console.log("My state is: ", checked);
                       if (!checkStudentNo) {
                         //props.handleChange("student");
-                        props.setFieldValue("isStudent", true);
+                        props.setFieldValue("isStudent", false);
                         setCheckStudentNo(true);
                         setCheckStudentYes(false);
                       } else {
-                        props.setFieldValue("isStudent", false);
+                        props.setFieldValue("isStudent", true);
                         setCheckStudentNo(false);
                         setCheckStudentYes(true);
                       }
@@ -307,11 +307,11 @@ const EditDetails = (navData) => {
                       //console.log("My state is: ", checked);
                       if (checkInsulinYes) {
                         //props.handleChange("diabetic");
-                        props.setFieldValue("insulinDependent", true);
+                        props.setFieldValue("insulinDependent", false);
                         setCheckInsulinYes(false);
                         setCheckInsulinNo(true);
                       } else {
-                        props.setFieldValue("insulinDependent", false);
+                        props.setFieldValue("insulinDependent", true);
                         setCheckInsulinYes(true);
                         setCheckInsulinNo(false);
                       }
@@ -330,11 +330,11 @@ const EditDetails = (navData) => {
                       //console.log("My state is: ", checked);
                       if (!checkInsulinNo) {
                         //props.handleChange("diabetic");
-                        props.setFieldValue("insulinDependent", true);
+                        props.setFieldValue("insulinDependent", false);
                         setCheckInsulinNo(true);
                         setCheckInsulinYes(false);
                       } else {
-                        props.setFieldValue("insulinDependent", false);
+                        props.setFieldValue("insulinDependent", true);
                         setCheckInsulinNo(false);
                         setCheckInsulinYes(true);
                       }
@@ -383,7 +383,7 @@ const EditDetails = (navData) => {
             <TouchableOpacity
               style={styles.submitButton}
               onPress={async () => {
-                //props.setFieldValue("token", token);
+                props.setFieldValue("token", token);
                 props.handleSubmit();
               }}
             >

@@ -12,10 +12,12 @@ import ProfileScreen from "../screens/ProfileScreen";
 import MenuScreen from "../screens/MenuScreen";
 import EditDetails from "../screens/EditDetails";
 import ResetPassword from "../screens/ResetPassword";
+import DailyHealth from "../screens/DailyHealth";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const ProfileStack = createStackNavigator();
+const HomeStack = createStackNavigator();
 
 function ProfileStackScreen() {
   return (
@@ -31,6 +33,23 @@ function ProfileStackScreen() {
         component={EditDetails}
       />
     </ProfileStack.Navigator>
+  );
+}
+
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        options={{ headerShown: false }}
+        name="HomeScreen"
+        component={HomeScreen}
+      />
+      <HomeStack.Screen
+        options={{ headerShown: false }}
+        name="DailyHealth"
+        component={DailyHealth}
+      />
+    </HomeStack.Navigator>
   );
 }
 
@@ -51,7 +70,7 @@ function Home() {
         },
       })}
     >
-      <Tab.Screen name="Main" component={HomeScreen} />
+      <Tab.Screen name="Main" component={HomeStackScreen} />
       <Tab.Screen name="Menu" component={MenuScreen} />
       <Tab.Screen name="Profile" component={ProfileStackScreen} />
       {/* <Tab.Screen name="EditDetails" component={EditDetails} /> */}

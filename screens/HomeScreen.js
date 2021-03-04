@@ -105,7 +105,7 @@ export default class Home extends React.Component {
             position={"right"}
             animated={false}
             showBackground={false}
-            onPressMain={() => console.log("button is pressed")}
+            onPressMain={() => this.props.navigation.navigate("DailyHealth")}
           />
         </View>
       </View>

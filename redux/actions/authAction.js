@@ -101,7 +101,7 @@ export const editUser = ({
   // email,
   // password,
   diabetic_type,
-  target_glucoce_level,
+  target_glucose_level,
   isStudent,
   insulinDependent,
   dailyStepGoal,
@@ -126,7 +126,7 @@ export const editUser = ({
           // email,
           // password,
           diabetic_type,
-          target_glucoce_level,
+          target_glucose_level,
           isStudent,
           insulinDependent,
           dailyStepGoal,
@@ -201,5 +201,54 @@ export const resetPassword = ({ email }) => {
 
     // const resultData = JSON.stringify(result);
     // console.log(resultData);
+  };
+};
+
+export const dailyHealth = ({ glucose_level, fasting, token }) => {
+  return async (dispatch) => {
+    // logic to make a post to REGISTER the user
+    try {
+      // const result = await fetch(
+      //   `http://192.168.100.102:3000/api/users/register`,
+      console.log("Token in POST request: ", token);
+      console.log("fasting in POST request: ", fasting);
+      console.log("glucose level in POST request: ", glucose_level);
+      const result = await fetch(`${BASE_URL}/api/bg_readings/`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+        body: JSON.stringify({
+          glucose_level,
+          fasting,
+        }),
+      });
+      let resultData = await result.json();
+      console.log(JSON.stringify(resultData));
+      // if (result.status === 200) {
+      //   console.log("200");
+      //   let resultData = await result.json();
+      //   let header = result.headers.get("X-Auth-Token");
+      //   console.log("Result Data: ", JSON.stringify(resultData));
+      //   console.log("Header: ", header);
+      //   dispatch({
+      //     type: REGISTER_USER_SUCCESS,
+      //     payload: { resultData: resultData, token: header },
+      //   });
+      //   return { resultData: resultData, token: header };
+      //   //return null;
+      // } else {
+      //   console.log("400");
+      //   dispatch({
+      //     type: REGISTER_USER_FAIL,
+      //   });
+      //   console.log("REGISTER FAIL");
+      //   return null;
+      // }
+    } catch (error) {
+      console.error(error);
+    }
   };
 };
