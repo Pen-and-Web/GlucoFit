@@ -3,6 +3,8 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
   REGISTER_USER_FAIL,
+  WEEKLY_SUBMISSION_SUCCESS,
+  WEEKLY_SUBMISSION_FAIL,
 } from "../actions/authAction";
 
 const initialState = {
@@ -30,6 +32,16 @@ export default function (state = initialState, action) {
         user: action.payload,
       };
     case LOGIN_USER_FAIL:
+      return {
+        ...state,
+        errors: true,
+      };
+    case WEEKLY_SUBMISSION_SUCCESS:
+      return {
+        ...state,
+        user: action.payload,
+      };
+    case WEEKLY_SUBMISSION_FAIL:
       return {
         ...state,
         errors: true,

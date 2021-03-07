@@ -12,22 +12,33 @@ import Card from "../components/Card";
 import Day from "../components/Day";
 import Card2 from "../components/Card2";
 import AsyncStorage from "@react-native-community/async-storage";
-export default class Home extends React.Component {
+import { useDispatch } from "react-redux";
+import { connect } from "react-redux";
+import { weeklySubmissions } from "../redux/actions/authAction";
+
+class Home extends React.Component {
   state = {
     color: "#136DF3",
     activestate: "rgba(255, 255, 255, 0.291821)",
     name: "",
     email: "",
+    token: "",
+    percentage: "",
   };
 
-  change = (navData) => {
-    return navData("Mission");
-  };
+  // change = (navData) => {
+  //   return navData("Mission");
+  // };
+
+  // change = (navData) => {
+  //   this.props.authAction.weeklySubmissions(navData)
+  // }
 
   loadData = async () => {
     try {
       let name = await AsyncStorage.getItem("name");
       let email = await AsyncStorage.getItem("email");
+      let token = await AsyncStorage.getItem("token");
       if (name !== null) {
         let firstword = name.split(" ")[0];
         this.setState({
@@ -39,13 +50,40 @@ export default class Home extends React.Component {
           email: email,
         });
       }
+      if (token !== null && token !== undefined) {
+        this.setState({
+          token: token,
+        });
+        console.log("console: ", token);
+        await this.weeklySubmissions(token);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
+  weeklySubmissions = async (token) => {
+    console.log("token in sub", token);
+    this.props
+      .weeklySubmissions(token)
+      .then(async (response) => {
+        console.log("Weekly Submission Response:", response);
+        if (response !== null) {
+          this.setState({
+            percentage: response["mission%"],
+          });
+          console.log("Percentage:", this.state.percentage);
+        } else {
+          Alert.alert("Response Failed. Try Again");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   componentDidMount = async () => {
     this.loadData();
+    // this.weeklySubmissions(this.state.token);
+    //this.change();
   };
   render() {
     return (
@@ -79,14 +117,18 @@ export default class Home extends React.Component {
               <Text style={styles.textone}>My Progress</Text>
             </View>
             <View style={styles.card1}>
-              <Card
-                move="bounceInLeft"
-                image={require("../assets/images/checkbox.png")}
-                title="Mission"
-                subtitle="85% Completed"
-                completed="85%"
-                screenchange={() => this.change()}
-              />
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("MissionsScreen")}
+              >
+                <Card
+                  move="bounceInLeft"
+                  image={require("../assets/images/checkbox.png")}
+                  title="Mission"
+                  subtitle={`${this.state.percentage}% Completed`}
+                  completed={`${this.state.percentage}%`}
+                  screenchange={() => this.change()}
+                />
+              </TouchableOpacity>
             </View>
             <View style={styles.card2}>
               <Card
@@ -112,6 +154,19 @@ export default class Home extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  console.log("State: ", state);
+  return { user: state.user };
+};
+
+const mapDispatchToProps = {
+  weeklySubmissions,
+  // weeklySubmissions
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

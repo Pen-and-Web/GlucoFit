@@ -12,32 +12,42 @@ import NumericInput from "react-native-numeric-input";
 import Counter from "react-native-counters";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CircleCheckBox, { LABEL_POSITION } from "react-native-circle-checkbox";
 import * as authAction from "../redux/actions/authAction";
 //LogBox.ignoreAllLogs();
 
 const formSchema = yup.object({
-  glucose_level: yup.number().min(1).max(59),
-  fasting: yup.boolean(),
+  fullname: yup.string().min(3),
+  email: yup.string().email(),
+  password: yup.string().min(6),
+  diabetic_type: yup.string(),
+  target_glucose_level: yup.number().min(1).max(59),
+  isStudent: yup.boolean(),
+  insulinDependent: yup.boolean(),
+  dailyStepGoal: yup.number().min(0).max(500000),
+  weeklyBGSubmissionGoal: yup.number().min(0).max(50),
 });
 
-const DailyHealth = (navData) => {
+const MissionsScreen = (navData) => {
   const dispatch = useDispatch();
+  const mission = useSelector((state) => state.auth.user.resultData);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
-  const [editName, setEditName] = useState("");
-  const [editEmail, setEditEmail] = useState("");
-  const [editPassword, setEditPassword] = useState("");
+  const [submissionCount, setSubmissionCount] = useState("");
+  const [submissionGoal, setSubmissionGoal] = useState("");
+  const [previousWeekCount, setPreviousWeekCount] = useState("");
   const [checkDiabeticYes, setCheckDiabeticYes] = useState(false);
   const [checkDiabeticNo, setCheckDiabeticNo] = useState(true);
   const [checkStudentYes, setCheckStudentYes] = useState(false);
   const [checkStudentNo, setCheckStudentNo] = useState(true);
-  const [checkFastingYes, setCheckFastingYes] = useState(false);
-  const [checkFastingNo, setCheckFastingNo] = useState(true);
+  const [checkInsulinYes, setCheckInsulinYes] = useState(false);
+  const [checkInsulinNo, setCheckInsulinNo] = useState(true);
   const [diabeticYes, setDiabeticYes] = useState("blue");
   const [diabeticNo, setDiabeticNo] = useState("blue");
+
+  console.log(mission);
 
   const loadData = async () => {
     try {
@@ -69,15 +79,46 @@ const DailyHealth = (navData) => {
   return (
     <Formik
       initialValues={{
-        glucose_level: "1",
-        fasting: false,
+        fullname: "",
+        email: "",
+        password: "",
+        diabetic_type: "non-diabetic",
+        target_glucose_level: 1,
+        isStudent: false,
+        insulinDependent: false,
+        dailyStepGoal: 0,
+        weeklyBGSubmissionGoal: 0,
         token: `${token}`,
       }}
       validationSchema={formSchema}
-      onSubmit={(glucose_level, fasting, token) => {
-        console.log("Register Screen Payload:", glucose_level);
+      onSubmit={(
+        fullname,
+        email,
+        password,
+        diabetic_type,
+        target_glucose_level,
+        isStudent,
+        insulinDependent,
+        dailyStepGoal,
+        weeklyBGSubmissionGoal,
+        token
+      ) => {
+        console.log("Register Screen Payload:", fullname);
         //console.log("Token in formik dispatch:", token);
-        dispatch(authAction.dailyHealth(glucose_level, fasting, token))
+        dispatch(
+          authAction.editUser(
+            fullname,
+            email,
+            password,
+            diabetic_type,
+            target_glucose_level,
+            isStudent,
+            insulinDependent,
+            dailyStepGoal,
+            weeklyBGSubmissionGoal,
+            token
+          )
+        )
           .then(async (response) => {
             //console.log("Edit Response:", response);
             // if (response !== null) {
@@ -104,85 +145,52 @@ const DailyHealth = (navData) => {
       {(props) => (
         <View>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Enter Daily Health</Text>
+            <Text style={styles.titleMain}>Mission</Text>
           </View>
 
           <ScrollView
             style={styles.ScrollView}
             contentContainerStyle={styles.ScrollViewContent}
           >
-            <View></View>
             <View style={styles.card}>
-              <Text style={styles.question}>
-                Enter Today's Blood-Glucose Level:
+              <Text style={styles.title}>Submission Count:</Text>
+              <Text style={styles.value}>{mission.submission_count}</Text>
+              <Text style={styles.title}>Submission Goal:</Text>
+              <Text style={styles.value}>{mission.submission_goal}</Text>
+              <Text style={styles.title}>Previous Week Count:</Text>
+              <Text style={styles.value}>{mission.previous_week_count}</Text>
+              <Text style={styles.title}>
+                7 Days Average Blood Glucose Level:
               </Text>
-              <TextInput
-                //label="Email"
-                value={props.values.glucose_level}
-                onChangeText={props.handleChange("glucose_level")}
-                placeholder={"0-50"}
-                keyboardType="numeric"
-              />
-            </View>
-
-            <View style={styles.card}>
-              <View>
-                <Text style={styles.question}>Are you fasting today?</Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <CircleCheckBox
-                    innerColor={"blue"}
-                    outerColor={"blue"}
-                    checked={checkFastingYes}
-                    onToggle={(checked) => {
-                      //console.log("My state is: ", checked);
-                      if (checkFastingYes) {
-                        //props.handleChange("diabetic");
-                        props.setFieldValue("fasting", false);
-                        console.log(props.values.fasting);
-                        setCheckFastingYes(false);
-                        setCheckFastingNo(true);
-                      } else {
-                        props.setFieldValue("fasting", true);
-                        setCheckFastingYes(true);
-                        setCheckFastingNo(false);
-                      }
-                    }}
-                  />
-                  <Text style={styles.Options}>Yes</Text>
-                </View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <CircleCheckBox
-                    innerColor={"blue"}
-                    outerColor={"blue"}
-                    checked={checkFastingNo}
-                    onToggle={(checked) => {
-                      //console.log("My state is: ", checked);
-                      if (!checkFastingNo) {
-                        //props.handleChange("diabetic");
-                        props.setFieldValue("fasting", false);
-                        setCheckFastingNo(true);
-                        setCheckFastingYes(false);
-                      } else {
-                        props.setFieldValue("fasting", true);
-                        setCheckFastingNo(false);
-                        setCheckFastingYes(true);
-                      }
-                    }}
-                  />
-                  <Text style={styles.Options}>No</Text>
-                </View>
-              </View>
-            </View>
-            <View>
-              <TouchableOpacity
-                style={styles.submitButton}
-                onPress={async () => {
-                  props.setFieldValue("token", token);
-                  props.handleSubmit();
-                }}
-              >
-                <Text style={styles.submitText}>Submit</Text>
-              </TouchableOpacity>
+              <Text style={styles.value}>
+                {mission["7_day_average_bgl_mmol_L"]}
+              </Text>
+              <Text style={styles.title}>
+                2 Month Average Blood Glucose Level:
+              </Text>
+              <Text style={styles.value}>
+                {mission["2_month_average_bgl_mmol_L"]}
+              </Text>
+              <Text style={styles.title}>Predicted A1c DCCT:</Text>
+              <Text style={styles.value}>{mission["predicted_A1c_DCCT%"]}</Text>
+              <Text style={styles.title}>Predicted A1c IFFC:</Text>
+              <Text style={styles.value}>
+                {mission["predicted_A1c_IFCC_mmol_mol"]}
+              </Text>
+              <Text style={styles.title}>7 Days Hypos:</Text>
+              <Text style={styles.value}>{mission["7_day_hypos"]}</Text>
+              <Text style={styles.title}>7 Days Hypers:</Text>
+              <Text style={styles.value}>{mission["7_day_hypers"]}</Text>
+              <Text style={styles.title}>Submission Goal Met:</Text>
+              <Text style={styles.value}>
+                {mission.submission_goal_met === true ? "Yes" : "No"}
+              </Text>
+              <Text style={styles.title}>Mission:</Text>
+              <Text style={styles.value}>{mission["mission%"]}</Text>
+              <Text style={styles.title}>Goal Feedback:</Text>
+              <Text style={styles.value}>{mission.goal_feedback}</Text>
+              <Text style={styles.title}>Previous Week Feedback:</Text>
+              <Text style={styles.value}>{mission.previous_week_feedback}</Text>
             </View>
           </ScrollView>
         </View>
@@ -191,7 +199,7 @@ const DailyHealth = (navData) => {
   );
 };
 
-export default DailyHealth;
+export default MissionsScreen;
 
 const styles = StyleSheet.create({
   card: {
@@ -215,7 +223,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#ff3333",
   },
-  title: {
+  titleMain: {
     fontSize: 30,
     fontWeight: "bold",
     color: "white",
@@ -274,10 +282,16 @@ const styles = StyleSheet.create({
   signoutText: {
     color: "white",
   },
-  question: {
+  title: {
     fontSize: 20,
     fontWeight: "bold",
     color: "black",
+  },
+  value: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "grey",
+    textAlign: "right",
   },
   ScrollView: {
     height: "100%",

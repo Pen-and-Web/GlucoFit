@@ -13,6 +13,7 @@ import MenuScreen from "../screens/MenuScreen";
 import EditDetails from "../screens/EditDetails";
 import ResetPassword from "../screens/ResetPassword";
 import DailyHealth from "../screens/DailyHealth";
+import MissionsScreen from "../screens/MissionsScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -48,6 +49,11 @@ function HomeStackScreen() {
         options={{ headerShown: false }}
         name="DailyHealth"
         component={DailyHealth}
+      />
+      <HomeStack.Screen
+        options={{ headerShown: false }}
+        name="MissionsScreen"
+        component={MissionsScreen}
       />
     </HomeStack.Navigator>
   );

@@ -2,6 +2,9 @@ export const REGISTER_USER_SUCCESS = "REGISTER_USER_SUCCESS";
 export const REGISTER_USER_FAIL = "REGISTER_USER_FAIL";
 export const LOGIN_USER_SUCCESS = "LOGIN_USER_SUCCESS";
 export const LOGIN_USER_FAIL = "LOGIN_USER_FAIL";
+export const WEEKLY_SUBMISSION_SUCCESS = "WEEKLY_SUBMISSION_SUCCESS";
+export const WEEKLY_SUBMISSION_FAIL = "WEEKLY_SUBMISSION_FAIL";
+
 import jwt_decode from "jwt-decode";
 
 const BASE_URL = "https://gentle-ravine-47650.herokuapp.com";
@@ -247,6 +250,53 @@ export const dailyHealth = ({ glucose_level, fasting, token }) => {
       //   console.log("REGISTER FAIL");
       //   return null;
       // }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const weeklySubmissions = (token) => {
+  return async (dispatch) => {
+    // logic to make a post to REGISTER the user
+    try {
+      // const result = await fetch(
+      //   `http://192.168.100.102:3000/api/users/register`,
+      console.log("Token in POST request: ", token);
+
+      const result = await fetch(
+        `${BASE_URL}/api/bg_readings/weekly_submissions`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "x-auth-token": token,
+          },
+        }
+      );
+      // let resultData = await result.json();
+      // console.log(JSON.stringify(resultData));
+      if (result.status === 200) {
+        console.log("200");
+        let resultData = await result.json();
+        //let header = result.headers.get("X-Auth-Token");
+        console.log("Result Data: ", JSON.stringify(resultData));
+        //console.log("Header: ", header);
+        dispatch({
+          type: WEEKLY_SUBMISSION_SUCCESS,
+          payload: { resultData },
+        });
+        return resultData;
+        //return null;
+      } else {
+        console.log("400");
+        dispatch({
+          type: WEEKLY_SUBMISSION_FAIL,
+        });
+        console.log("REGISTER FAIL");
+        return null;
+      }
     } catch (error) {
       console.error(error);
     }
