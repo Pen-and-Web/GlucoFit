@@ -5,11 +5,15 @@ import {
   REGISTER_USER_FAIL,
   WEEKLY_SUBMISSION_SUCCESS,
   WEEKLY_SUBMISSION_FAIL,
+  WEEKLY_SUMMARY_SUCCESS,
+  WEEKLY_SUMMARY_FAIL
 } from "../actions/authAction";
 
 const initialState = {
   user: {},
   errors: {},
+  summary: {},
+  weeklySubmissions: {}
 };
 
 export default function (state = initialState, action) {
@@ -39,13 +43,23 @@ export default function (state = initialState, action) {
     case WEEKLY_SUBMISSION_SUCCESS:
       return {
         ...state,
-        user: action.payload,
+        weeklySubmissions: action.payload,
       };
     case WEEKLY_SUBMISSION_FAIL:
       return {
         ...state,
         errors: true,
       };
+    case WEEKLY_SUMMARY_SUCCESS:
+      return{
+        ...state,
+        summary: action.payload
+      }
+    case WEEKLY_SUMMARY_FAIL:
+      return{
+        ...state,
+        errors: true
+      }
   }
 
   return state;

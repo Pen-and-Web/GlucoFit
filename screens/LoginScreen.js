@@ -15,11 +15,21 @@ import * as yup from "yup";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-community/async-storage";
 import * as authAction from "../redux/actions/authAction";
+import * as WebBrowser from "expo-web-browser";
+import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 
 const formSchema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().required().min(6),
 });
+
+WebBrowser.maybeCompleteAuthSession();
+
+const discovery = {
+  authorizationEndpoint: "https://www.fitbit.com/oauth2/authorize",
+  tokenEndpoint: "https://api.fitbit.com/oauth2/token",
+  revocationEndpoint: "https://api.fitbit.com/oauth2/revoke",
+};
 
 const LoginScreen = (navData) => {
   const dispatch = useDispatch();
@@ -34,9 +44,28 @@ const LoginScreen = (navData) => {
     }
   };
 
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      clientId: "CLIENT_ID",
+      scopes: ["activity", "sleep"],
+      // For usage in managed apps using the proxy
+      redirectUri: makeRedirectUri({
+        // For usage in bare and standalone
+        native: "host.exp.exponent://redirect",
+      }),
+    },
+    discovery
+  );
+
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { code } = response.params;
+    }
+  }, [response]);
 
   return (
     <KeyboardAvoidingView
@@ -122,6 +151,18 @@ const LoginScreen = (navData) => {
             >
               <Text style={styles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
+            {/* <TouchableOpacity
+              style={styles.loginButton}
+              disabled={!request}
+              onPress={() => {
+                promptAsync();
+              }}
+            >
+              <Image
+                source={require("../assets/images/fitbit.png")}
+                style={styles.fitbit}
+              />
+            </TouchableOpacity> */}
             <View style={styles.registerContainer}>
               <Text style={styles.SignUpText}>Don't have account? </Text>
               <TouchableOpacity
@@ -216,6 +257,12 @@ const styles = StyleSheet.create({
   },
   Register: {
     color: "white",
+  },
+  fitbit: {
+    height: 30,
+    width: 120,
+    //borderRadius: 10,
+    //opacity: 0.5,
   },
 });
 

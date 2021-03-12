@@ -4,6 +4,8 @@ export const LOGIN_USER_SUCCESS = "LOGIN_USER_SUCCESS";
 export const LOGIN_USER_FAIL = "LOGIN_USER_FAIL";
 export const WEEKLY_SUBMISSION_SUCCESS = "WEEKLY_SUBMISSION_SUCCESS";
 export const WEEKLY_SUBMISSION_FAIL = "WEEKLY_SUBMISSION_FAIL";
+export const WEEKLY_SUMMARY_SUCCESS = "WEEKLY_SUMMARY_SUCCESS";
+export const WEEKLY_SUMMARY_FAIL = "WEEKLY_SUMMARY_FAIL";
 
 import jwt_decode from "jwt-decode";
 
@@ -279,20 +281,64 @@ export const weeklySubmissions = (token) => {
       // console.log(JSON.stringify(resultData));
       if (result.status === 200) {
         console.log("200");
-        let resultData = await result.json();
+        let weeklySubmissions = await result.json();
         //let header = result.headers.get("X-Auth-Token");
-        console.log("Result Data: ", JSON.stringify(resultData));
+        console.log("Result Data: ", JSON.stringify(weeklySubmissions));
         //console.log("Header: ", header);
         dispatch({
           type: WEEKLY_SUBMISSION_SUCCESS,
-          payload: { resultData },
+          payload: { weeklySubmissions },
         });
-        return resultData;
+        return { weeklySubmissions };
         //return null;
       } else {
         console.log("400");
         dispatch({
           type: WEEKLY_SUBMISSION_FAIL,
+        });
+        console.log("REGISTER FAIL");
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const weeklySummary = (token) => {
+  return async (dispatch) => {
+    // logic to make a post to REGISTER the user
+    try {
+      // const result = await fetch(
+      //   `http://192.168.100.102:3000/api/users/register`,
+      console.log("Token in POST request: ", token);
+
+      const result = await fetch(`${BASE_URL}/api/summary`, {
+        method: "GET",
+        headers: {
+          Accept: "text/csv;charset=utf-8",
+          "Content-Type": "text/csv;charset=utf-8",
+          "x-auth-token": token,
+        },
+      });
+      // let resultData = await result.json();
+      // console.log(JSON.stringify(resultData));
+      if (result.status === 200) {
+        console.log("200");
+        let summary = await result.text();
+        //let header = result.headers.get("X-Auth-Token");
+        //console.log("Weekly Summary: ",summary);
+        //console.log("Header: ", header);
+        dispatch({
+          type: WEEKLY_SUMMARY_SUCCESS,
+          payload: { summary: summary },
+        });
+        return { summary: summary };
+        //return null;
+      } else {
+        console.log("400");
+        dispatch({
+          type: WEEKLY_SUMMARY_FAIL,
         });
         console.log("REGISTER FAIL");
         return null;

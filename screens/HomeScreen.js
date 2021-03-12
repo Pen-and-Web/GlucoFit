@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   ImageBackground,
+  Image,
 } from "react-native";
 import FloatingAction from "react-native-floating-action/src/FloatingAction";
 import Card from "../components/Card";
@@ -15,6 +16,18 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { useDispatch } from "react-redux";
 import { connect } from "react-redux";
 import { weeklySubmissions } from "../redux/actions/authAction";
+import * as WebBrowser from "expo-web-browser";
+import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
+// import * as expoAuthSession from "expo-auth-session";
+// console.log("Expo auth session:",expoAuthSession);
+
+WebBrowser.maybeCompleteAuthSession();
+
+const discovery = {
+  authorizationEndpoint: "https://www.fitbit.com/oauth2/authorize",
+  tokenEndpoint: "https://api.fitbit.com/oauth2/token",
+  revocationEndpoint: "https://api.fitbit.com/oauth2/revoke",
+};
 
 class Home extends React.Component {
   state = {
@@ -33,6 +46,26 @@ class Home extends React.Component {
   // change = (navData) => {
   //   this.props.authAction.weeklySubmissions(navData)
   // }
+
+  fitbit = () => {
+    const [request, response, promptAsync] = useAuthRequest(
+      {
+        clientId: "CLIENT_ID",
+        scopes: ["activity", "sleep"],
+        // For usage in managed apps using the proxy
+        redirectUri: makeRedirectUri({
+          // For usage in bare and standalone
+          native: "host.exp.exponent://redirect",
+        }),
+      },
+      discovery
+    );
+    if (response?.type === "success") {
+      const { code } = response.params;
+      console.log("Code: ", code);
+    }
+    //promptAsync();
+  };
 
   loadData = async () => {
     try {
@@ -62,6 +95,19 @@ class Home extends React.Component {
     }
   };
 
+  // [request, response, promptAsync] = useAuthRequest(
+  //   {
+  //     clientId: "CLIENT_ID",
+  //     scopes: ["activity", "sleep"],
+  //     // For usage in managed apps using the proxy
+  //     redirectUri: makeRedirectUri({
+  //       // For usage in bare and standalone
+  //       native: "host.exp.exponent://redirect",
+  //     }),
+  //   },
+  //   discovery
+  // );
+
   weeklySubmissions = async (token) => {
     console.log("token in sub", token);
     this.props
@@ -70,7 +116,7 @@ class Home extends React.Component {
         console.log("Weekly Submission Response:", response);
         if (response !== null) {
           this.setState({
-            percentage: response["mission%"],
+            percentage: response.weeklySubmissions["mission%"],
           });
           console.log("Percentage:", this.state.percentage);
         } else {
@@ -82,6 +128,8 @@ class Home extends React.Component {
 
   componentDidMount = async () => {
     this.loadData();
+    this.fitbit();
+
     // this.weeklySubmissions(this.state.token);
     //this.change();
   };
@@ -117,6 +165,18 @@ class Home extends React.Component {
               <Text style={styles.textone}>My Progress</Text>
             </View>
             <View style={styles.card1}>
+              <TouchableOpacity
+                //style={styles.loginButton}
+                //disabled={!request}
+                onPress={() => {
+                  //this.fitbit();
+                }}
+              >
+                <Image
+                  source={require("../assets/images/fitbit1.png")}
+                  //style={styles.fitbit}
+                />
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate("MissionsScreen")}
               >

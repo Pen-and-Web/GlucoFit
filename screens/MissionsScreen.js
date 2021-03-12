@@ -15,6 +15,11 @@ import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import CircleCheckBox, { LABEL_POSITION } from "react-native-circle-checkbox";
 import * as authAction from "../redux/actions/authAction";
+import AwesomeButton from "react-native-really-awesome-button";
+import * as FileSystem from "expo-file-system";
+import * as Permissions from "expo-permissions";
+import * as MediaLibrary from "expo-media-library";
+
 //LogBox.ignoreAllLogs();
 
 const formSchema = yup.object({
@@ -31,7 +36,9 @@ const formSchema = yup.object({
 
 const MissionsScreen = (navData) => {
   const dispatch = useDispatch();
-  const mission = useSelector((state) => state.auth.user.resultData);
+  const mission = useSelector(
+    (state) => state.auth.weeklySubmissions.weeklySubmissions
+  );
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
@@ -67,6 +74,38 @@ const MissionsScreen = (navData) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const summary = async () => {
+    dispatch(authAction.weeklySummary(token))
+      .then(async (response) => {
+        console.log(
+          "Summary in mission screen: ",
+          JSON.stringify(response.summary)
+        );
+        let data = [JSON.stringify(response.summary)];
+        const rowString = [data].map((d) => `${d[0]},${d[1]}\n`).join("");
+        console.log("Row String: ", rowString);
+        // const fileUri = FileSystem.documentDirectory + "filename.csv";
+        // const url = fileRoute;
+        // await FileSystem.writeAsStringAsync
+        // let downloadObject = FileSystem.createDownloadResumable(url, fileUri);
+        // let respond = await downloadObject.downloadAsync();
+        // const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        // if (status === "granted") {
+        //   let fileUri = FileSystem.documentDirectory + "summary.csv"; //done
+        //   //const url = fileRoute; //done
+        //   await FileSystem.writeAsStringAsync(fileUri, response.summary, {
+        //     encoding: FileSystem.EncodingType.UTF8,
+        //   })
+
+        //   //await file.downloadAsync();
+
+        //   //const asset = await MediaLibrary.createAssetAsync(fileUri);
+        //   //await MediaLibrary.createAlbumAsync("Summary", asset, true);
+        // }
+      })
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
@@ -186,11 +225,17 @@ const MissionsScreen = (navData) => {
                 {mission.submission_goal_met === true ? "Yes" : "No"}
               </Text>
               <Text style={styles.title}>Mission:</Text>
-              <Text style={styles.value}>{mission["mission%"]}</Text>
+              <Text style={styles.value}>{mission["mission%"]}%</Text>
               <Text style={styles.title}>Goal Feedback:</Text>
               <Text style={styles.value}>{mission.goal_feedback}</Text>
               <Text style={styles.title}>Previous Week Feedback:</Text>
               <Text style={styles.value}>{mission.previous_week_feedback}</Text>
+            </View>
+
+            <View style={styles.card}>
+              <AwesomeButton progress onPress={summary}>
+                Previous Week Summary
+              </AwesomeButton>
             </View>
           </ScrollView>
         </View>
