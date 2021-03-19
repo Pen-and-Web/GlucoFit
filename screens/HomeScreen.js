@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,11 +13,14 @@ import Card from "../components/Card";
 import Day from "../components/Day";
 import Card2 from "../components/Card2";
 import AsyncStorage from "@react-native-community/async-storage";
-import { useDispatch } from "react-redux";
-import { connect } from "react-redux";
-import { weeklySubmissions } from "../redux/actions/authAction";
+import { connect, useDispatch } from "react-redux";
+import * as authAction from "../redux/actions/authAction";
 import * as WebBrowser from "expo-web-browser";
-import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
+import {
+  makeRedirectUri,
+  useAuthRequest,
+  getRedirectUrl,
+} from "expo-auth-session";
 // import * as expoAuthSession from "expo-auth-session";
 // console.log("Expo auth session:",expoAuthSession);
 
@@ -29,73 +32,81 @@ const discovery = {
   revocationEndpoint: "https://api.fitbit.com/oauth2/revoke",
 };
 
-class Home extends React.Component {
-  state = {
-    color: "#136DF3",
-    activestate: "rgba(255, 255, 255, 0.291821)",
-    name: "",
-    email: "",
-    token: "",
-    percentage: "",
-  };
-
-  // change = (navData) => {
-  //   return navData("Mission");
+const Home = (navData) => {
+  // state = {
+  //   color: "#136DF3",
+  //   activestate: "rgba(255, 255, 255, 0.291821)",
+  //   name: "",
+  //   email: "",
+  //   token: "",
+  //   percentage: "",
   // };
+  const url = getRedirectUrl("redirect");
+  console.log("URL :", url);
+  const [color, setColor] = useState("#136DF3");
+  const [activeState, setActiveState] = useState(
+    "rgba(255, 255, 255, 0.291821)"
+  );
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [token, setToken] = useState("");
+  const [percentage, setPercentage] = useState("");
+  const dispatch = useDispatch();
+
+  const change = (navData) => {
+    return navData("Mission");
+  };
 
   // change = (navData) => {
   //   this.props.authAction.weeklySubmissions(navData)
   // }
 
-  fitbit = () => {
-    const [request, response, promptAsync] = useAuthRequest(
-      {
-        clientId: "CLIENT_ID",
-        scopes: ["activity", "sleep"],
-        // For usage in managed apps using the proxy
-        redirectUri: makeRedirectUri({
-          // For usage in bare and standalone
-          native: "host.exp.exponent://redirect",
-        }),
-      },
-      discovery
-    );
-    if (response?.type === "success") {
-      const { code } = response.params;
-      console.log("Code: ", code);
-    }
-    //promptAsync();
-  };
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      clientId: "22C5BD",
+      scopes: ["activity", "sleep"],
+      // For usage in managed apps using the proxy
+      redirectUri: makeRedirectUri({
+        // For usage in bare and standalone
+        //native: "your.app://redirect",
+        //useProxy: false,
+      }),
+    },
+    discovery
+  );
 
-  loadData = async () => {
+  const loadData = async () => {
     try {
       let name = await AsyncStorage.getItem("name");
       let email = await AsyncStorage.getItem("email");
       let token = await AsyncStorage.getItem("token");
       if (name !== null) {
         let firstword = name.split(" ")[0];
-        this.setState({
-          name: firstword,
-        });
+        setName(firstword);
+        // this.setState({
+        //   name: firstword,
+        // });
       }
       if (email !== null) {
-        this.setState({
-          email: email,
-        });
+        setEmail(email);
+        // this.setState({
+        //   email: email,
+        // });
       }
       if (token !== null && token !== undefined) {
-        this.setState({
-          token: token,
-        });
+        setToken(token);
+        // this.setState({
+        //   token: token,
+        // });
         console.log("console: ", token);
-        await this.weeklySubmissions(token);
+        await weeklySubmissions(token);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  // [request, response, promptAsync] = useAuthRequest(
+  // const [request, response, promptAsync] = useAuthRequest(
   //   {
   //     clientId: "CLIENT_ID",
   //     scopes: ["activity", "sleep"],
@@ -108,17 +119,17 @@ class Home extends React.Component {
   //   discovery
   // );
 
-  weeklySubmissions = async (token) => {
+  const weeklySubmissions = async (token) => {
     console.log("token in sub", token);
-    this.props
-      .weeklySubmissions(token)
+    dispatch(authAction.weeklySubmissions(token))
       .then(async (response) => {
         console.log("Weekly Submission Response:", response);
         if (response !== null) {
-          this.setState({
-            percentage: response.weeklySubmissions["mission%"],
-          });
-          console.log("Percentage:", this.state.percentage);
+          // this.setState({
+          //   percentage: response.weeklySubmissions["mission%"],
+          // });
+          setPercentage(response.weeklySubmissions["mission%"]);
+          console.log("Percentage:", percentage);
         } else {
           Alert.alert("Response Failed. Try Again");
         }
@@ -126,106 +137,119 @@ class Home extends React.Component {
       .catch((err) => console.log(err));
   };
 
-  componentDidMount = async () => {
-    this.loadData();
-    this.fitbit();
+  // componentDidMount = async () => {
+  //   this.loadData();
+  //   this.fitbit();
 
-    // this.weeklySubmissions(this.state.token);
-    //this.change();
-  };
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.containerone}>
-          <View style={styles.boxone}></View>
-          <View style={styles.boxtwo}>
-            <Text style={styles.name}>Hi, {this.state.name}</Text>
-            <Text style={styles.subtitle}>Here is your health.</Text>
-          </View>
-          <View style={styles.boxthree}>
-            <ImageBackground
-              source={require("../assets/images/graphone.png")}
-              style={{ width: 400, height: "120%", paddingBottom: 80 }}
-            />
-          </View>
-          <View style={styles.boxfour}>
-            <Day dayname="Sun" active={this.state.activestate} />
-            <Day dayname="Mon" />
-            <Day dayname="Tue" />
-            <Day dayname="Wed" />
-            <Day dayname="Thu" />
-            <Day dayname="Fri" />
-            <Day dayname="Sat" />
-          </View>
+  //   // this.weeklySubmissions(this.state.token);
+  //   //this.change();
+  // };
+
+  useEffect(() => {
+    loadData();
+    //weeklySubmissions();
+  }, []);
+
+  useEffect(() => {
+    console.log("Fitbit response: ", response);
+    if (response?.type === "success") {
+      const { code } = response.params;
+    }
+  }, [response]);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.containerone}>
+        <View style={styles.boxone}></View>
+        <View style={styles.boxtwo}>
+          <Text style={styles.name}>Hi, {name}</Text>
+          <Text style={styles.subtitle}>Here is your health.</Text>
         </View>
-        <View style={styles.containertwo}>
-          <View style={styles.line}></View>
-          <ScrollView>
-            <View style={styles.progress}>
-              <Text style={styles.textone}>My Progress</Text>
-            </View>
-            <View style={styles.card1}>
-              <TouchableOpacity
-                //style={styles.loginButton}
-                //disabled={!request}
-                onPress={() => {
-                  //this.fitbit();
-                }}
-              >
-                <Image
-                  source={require("../assets/images/fitbit1.png")}
-                  //style={styles.fitbit}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate("MissionsScreen")}
-              >
-                <Card
-                  move="bounceInLeft"
-                  image={require("../assets/images/checkbox.png")}
-                  title="Mission"
-                  subtitle={`${this.state.percentage}% Completed`}
-                  completed={`${this.state.percentage}%`}
-                  screenchange={() => this.change()}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.card2}>
-              <Card
-                move="bounceInRight"
-                image={require("../assets/images/checktodo.png")}
-                title="Completed"
-                subtitle="5K out of 10K steps"
-                completed="50%"
-              />
-            </View>
-            <View style={styles.card3}>
-              <Card2 />
-            </View>
-          </ScrollView>
-          <FloatingAction
-            position={"right"}
-            animated={false}
-            showBackground={false}
-            onPressMain={() => this.props.navigation.navigate("DailyHealth")}
+        <View style={styles.boxthree}>
+          <ImageBackground
+            source={require("../assets/images/graphone.png")}
+            style={{ width: 400, height: "120%", paddingBottom: 80 }}
           />
         </View>
+        <View style={styles.boxfour}>
+          <Day dayname="Sun" active={activeState} />
+          <Day dayname="Mon" />
+          <Day dayname="Tue" />
+          <Day dayname="Wed" />
+          <Day dayname="Thu" />
+          <Day dayname="Fri" />
+          <Day dayname="Sat" />
+        </View>
       </View>
-    );
-  }
-}
-
-const mapStateToProps = (state) => {
-  console.log("State: ", state);
-  return { user: state.user };
+      <View style={styles.containertwo}>
+        <View style={styles.line}></View>
+        <ScrollView>
+          <View style={styles.progress}>
+            <Text style={styles.textone}>My Progress</Text>
+          </View>
+          <View style={styles.card1}>
+            <TouchableOpacity
+              //style={styles.loginButton}
+              disabled={!request}
+              onPress={() => {
+                promptAsync();
+              }}
+            >
+              <Image
+                source={require("../assets/images/fitbit1.png")}
+                //style={styles.fitbit}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navData.navigation.navigate("MissionsScreen")}
+            >
+              <Card
+                move="bounceInLeft"
+                image={require("../assets/images/checkbox.png")}
+                title="Mission"
+                subtitle={`${percentage}% Completed`}
+                completed={`${percentage}%`}
+                screenchange={() => change()}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.card2}>
+            <Card
+              move="bounceInRight"
+              image={require("../assets/images/checktodo.png")}
+              title="Completed"
+              subtitle="5K out of 10K steps"
+              completed="50%"
+            />
+          </View>
+          <View style={styles.card3}>
+            <Card2 />
+          </View>
+        </ScrollView>
+        <FloatingAction
+          position={"right"}
+          animated={false}
+          showBackground={false}
+          onPressMain={() => navData.navigation.navigate("DailyHealth")}
+        />
+      </View>
+    </View>
+  );
 };
 
-const mapDispatchToProps = {
-  weeklySubmissions,
-  // weeklySubmissions
-};
+// const mapStateToProps = (state) => {
+//   console.log("State: ", state);
+//   return { user: state.user };
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+// const mapDispatchToProps = {
+//   weeklySubmissions,
+//   // weeklySubmissions
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+export default Home;
 
 const styles = StyleSheet.create({
   container: {

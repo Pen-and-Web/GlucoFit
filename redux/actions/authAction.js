@@ -325,7 +325,7 @@ export const weeklySummary = (token) => {
       // console.log(JSON.stringify(resultData));
       if (result.status === 200) {
         console.log("200");
-        let summary = await result.text();
+        let summary = await result.json();
         //let header = result.headers.get("X-Auth-Token");
         //console.log("Weekly Summary: ",summary);
         //console.log("Header: ", header);
