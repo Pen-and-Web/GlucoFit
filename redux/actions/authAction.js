@@ -6,6 +6,10 @@ export const WEEKLY_SUBMISSION_SUCCESS = "WEEKLY_SUBMISSION_SUCCESS";
 export const WEEKLY_SUBMISSION_FAIL = "WEEKLY_SUBMISSION_FAIL";
 export const WEEKLY_SUMMARY_SUCCESS = "WEEKLY_SUMMARY_SUCCESS";
 export const WEEKLY_SUMMARY_FAIL = "WEEKLY_SUMMARY_FAIL";
+export const CALORIES_SUCCESS = "CALORIES_SUCCESS";
+export const CALORIES_FAIL = "CALORIES_FAIL";
+export const STEPS_SUCCESS = "STEPS_SUCCESS";
+export const STEPS_FAIL = "STEPS_FAIL";
 
 import jwt_decode from "jwt-decode";
 
@@ -339,6 +343,90 @@ export const weeklySummary = (token) => {
         console.log("400");
         dispatch({
           type: WEEKLY_SUMMARY_FAIL,
+        });
+        console.log("REGISTER FAIL");
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const caloriesBurnt = (token) => {
+  return async (dispatch) => {
+    // logic to make a post to REGISTER the user
+    try {
+      // const result = await fetch(
+      //   `http://192.168.100.102:3000/api/users/register`,
+      console.log("Token in POST request: ", token);
+
+      const result = await fetch(`${BASE_URL}/api/activity/todays_calories`, {
+        method: "GET",
+        headers: {
+          "x-auth-token": token,
+        },
+      });
+      // let resultData = await result.json();
+      // console.log(JSON.stringify(resultData));
+      if (result.status === 200) {
+        console.log("200");
+        let calories = await result.json();
+        //let header = result.headers.get("X-Auth-Token");
+        //console.log("Weekly Summary: ",summary);
+        //console.log("Header: ", header);
+        dispatch({
+          type: CALORIES_SUCCESS,
+          payload: { calories: calories },
+        });
+        return { calories: calories };
+        //return null;
+      } else {
+        console.log("400");
+        dispatch({
+          type: CALORIES_FAIL,
+        });
+        console.log("REGISTER FAIL");
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const dailySteps = (token) => {
+  return async (dispatch) => {
+    // logic to make a post to REGISTER the user
+    try {
+      // const result = await fetch(
+      //   `http://192.168.100.102:3000/api/users/register`,
+      console.log("Token in POST request: ", token);
+
+      const result = await fetch(`${BASE_URL}/api/activity/todays_steps`, {
+        method: "GET",
+        headers: {
+          "x-auth-token": token,
+        },
+      });
+      // let resultData = await result.json();
+      // console.log(JSON.stringify(resultData));
+      if (result.status === 200) {
+        console.log("200");
+        let steps = await result.json();
+        //let header = result.headers.get("X-Auth-Token");
+        //console.log("Weekly Summary: ",summary);
+        //console.log("Header: ", header);
+        dispatch({
+          type: STEPS_SUCCESS,
+          payload: { steps: steps },
+        });
+        return { steps: steps };
+        //return null;
+      } else {
+        console.log("400");
+        dispatch({
+          type: STEPS_FAIL,
         });
         console.log("REGISTER FAIL");
         return null;

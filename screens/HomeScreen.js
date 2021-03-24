@@ -7,6 +7,7 @@ import {
   ScrollView,
   ImageBackground,
   Image,
+  Alert,
 } from "react-native";
 import FloatingAction from "react-native-floating-action/src/FloatingAction";
 import Card from "../components/Card";
@@ -20,11 +21,22 @@ import {
   makeRedirectUri,
   useAuthRequest,
   getRedirectUrl,
+  ResponseType,
 } from "expo-auth-session";
-// import * as expoAuthSession from "expo-auth-session";
-// console.log("Expo auth session:",expoAuthSession);
+import { generateSecureRandom } from "react-native-securerandom";
+import * as Random from "expo-random";
+import * as Crypto from "expo-crypto";
+import moment from "moment";
 
 WebBrowser.maybeCompleteAuthSession();
+
+const useProxy = Platform.select({ web: false, default: true });
+
+// const discovery = {
+//   authorizationEndpoint: "https://www.fitbit.com/oauth2/authorize",
+//   tokenEndpoint: "https://api.fitbit.com/oauth2/token",
+//   revocationEndpoint: "https://api.fitbit.com/oauth2/revoke",
+// };
 
 const discovery = {
   authorizationEndpoint: "https://www.fitbit.com/oauth2/authorize",
@@ -42,7 +54,7 @@ const Home = (navData) => {
   //   percentage: "",
   // };
   const url = getRedirectUrl("redirect");
-  console.log("URL :", url);
+  //console.log("URL :", url);
   const [color, setColor] = useState("#136DF3");
   const [activeState, setActiveState] = useState(
     "rgba(255, 255, 255, 0.291821)"
@@ -51,6 +63,8 @@ const Home = (navData) => {
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
   const [percentage, setPercentage] = useState("");
+  const [steps, setSteps] = useState("");
+  const [stepsPercentage, setStepsPercentage] = useState("");
   const dispatch = useDispatch();
 
   const change = (navData) => {
@@ -63,13 +77,14 @@ const Home = (navData) => {
 
   const [request, response, promptAsync] = useAuthRequest(
     {
+      responseType: ResponseType.Token,
       clientId: "22C5BD",
-      scopes: ["activity", "sleep"],
+      scopes: ["activity", "sleep", "weight", "profile"],
       // For usage in managed apps using the proxy
       redirectUri: makeRedirectUri({
+        useProxy,
         // For usage in bare and standalone
-        //native: "your.app://redirect",
-        //useProxy: false,
+        //native: 'your.app://redirect',
       }),
     },
     discovery
@@ -80,6 +95,22 @@ const Home = (navData) => {
       let name = await AsyncStorage.getItem("name");
       let email = await AsyncStorage.getItem("email");
       let token = await AsyncStorage.getItem("token");
+      // Random.getRandomBytesAsync(8).then((randomBytes) => {
+      //   console.log("Random Bytes", randomBytes);
+      //   let sequence = randomBytes
+      //     .toString("base64")
+      //     .replace(/\+/g, "-")
+      //     .replace(/\//g, "_")
+      //     .replace(/=/g, "");
+
+      //   console.log("Sequence: ", sequence);
+      // });
+      // const digest = await Crypto.digestStringAsync(
+      //   Crypto.CryptoDigestAlgorithm.SHA256,
+      //   "Github stars are neat 🌟"
+      // );
+      //console.log("Digest: ", digest);
+
       if (name !== null) {
         let firstword = name.split(" ")[0];
         setName(firstword);
@@ -98,38 +129,41 @@ const Home = (navData) => {
         // this.setState({
         //   token: token,
         // });
-        console.log("console: ", token);
+        //console.log("console: ", token);
         await weeklySubmissions(token);
+        await dailySteps(token);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const [request, response, promptAsync] = useAuthRequest(
-  //   {
-  //     clientId: "CLIENT_ID",
-  //     scopes: ["activity", "sleep"],
-  //     // For usage in managed apps using the proxy
-  //     redirectUri: makeRedirectUri({
-  //       // For usage in bare and standalone
-  //       native: "host.exp.exponent://redirect",
-  //     }),
-  //   },
-  //   discovery
-  // );
-
   const weeklySubmissions = async (token) => {
-    console.log("token in sub", token);
+    //console.log("token in sub", token);
     dispatch(authAction.weeklySubmissions(token))
       .then(async (response) => {
-        console.log("Weekly Submission Response:", response);
+        //console.log("Weekly Submission Response:", response);
         if (response !== null) {
           // this.setState({
           //   percentage: response.weeklySubmissions["mission%"],
           // });
           setPercentage(response.weeklySubmissions["mission%"]);
-          console.log("Percentage:", percentage);
+          //console.log("Percentage:", percentage);
+        } else {
+          Alert.alert("Response Failed. Try Again");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const dailySteps = async (token) => {
+    //console.log("token in sub", token);
+    dispatch(authAction.dailySteps(token))
+      .then(async (response) => {
+        console.log("Daily Steps: ", response);
+        if (response !== null) {
+          setSteps(response.steps.todays_steps);
+          setStepsPercentage(response.steps["mission%"]);
         } else {
           Alert.alert("Response Failed. Try Again");
         }
@@ -153,7 +187,8 @@ const Home = (navData) => {
   useEffect(() => {
     console.log("Fitbit response: ", response);
     if (response?.type === "success") {
-      const { code } = response.params;
+      const data = response.params;
+      console.log("Access Token", data);
     }
   }, [response]);
 
@@ -172,34 +207,50 @@ const Home = (navData) => {
           />
         </View>
         <View style={styles.boxfour}>
-          <Day dayname="Sun" active={activeState} />
-          <Day dayname="Mon" />
+          <Day dayname={moment().format("MMMM Do YYYY")} active={activeState} />
+          {/* <Day dayname="Mon" />
           <Day dayname="Tue" />
           <Day dayname="Wed" />
           <Day dayname="Thu" />
           <Day dayname="Fri" />
-          <Day dayname="Sat" />
+          <Day dayname="Sat" /> */}
         </View>
       </View>
       <View style={styles.containertwo}>
         <View style={styles.line}></View>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ paddingBottom: "30%" }}>
           <View style={styles.progress}>
             <Text style={styles.textone}>My Progress</Text>
           </View>
           <View style={styles.card1}>
+            <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+              Connect to Fitbit
+            </Text>
             <TouchableOpacity
+              style={styles.fitbitButton}
+              disabled={!request}
+              onPress={() => {
+                promptAsync({ useProxy });
+              }}
+            >
+              <Image
+                source={require("../assets/images/fitbit.png")}
+                style={styles.fitbit}
+              />
+            </TouchableOpacity>
+            {/* <TouchableOpacity
               //style={styles.loginButton}
               disabled={!request}
               onPress={() => {
-                promptAsync();
+                promptAsync({ useProxy });
               }}
             >
               <Image
                 source={require("../assets/images/fitbit1.png")}
                 //style={styles.fitbit}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
             <TouchableOpacity
               onPress={() => navData.navigation.navigate("MissionsScreen")}
             >
@@ -219,12 +270,12 @@ const Home = (navData) => {
               image={require("../assets/images/checktodo.png")}
               title="Completed"
               subtitle="5K out of 10K steps"
-              completed="50%"
+              completed={`${stepsPercentage}%`}
             />
           </View>
-          <View style={styles.card3}>
+          {/* <View style={styles.card3}>
             <Card2 />
-          </View>
+          </View> */}
         </ScrollView>
         <FloatingAction
           position={"right"}
@@ -313,6 +364,10 @@ const styles = StyleSheet.create({
     display: "flex",
     marginTop: 10,
     marginHorizontal: 30,
+    justifyContent: "center",
+    //alignSelf: "center",
+    //alignContent: "center",
+    //alignItems: "center",
   },
   card2: {
     flex: 0.5,
@@ -325,5 +380,22 @@ const styles = StyleSheet.create({
     display: "flex",
     marginTop: 10,
     marginHorizontal: 10,
+  },
+  fitbitButton: {
+    width: "80%",
+    backgroundColor: "#fb5b5a",
+    borderRadius: 25,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    marginBottom: 10,
+    alignSelf: "center",
+  },
+  fitbit: {
+    height: 30,
+    width: 120,
+    //borderRadius: 10,
+    //opacity: 0.5,
   },
 });

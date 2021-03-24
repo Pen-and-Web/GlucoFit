@@ -6,14 +6,20 @@ import {
   WEEKLY_SUBMISSION_SUCCESS,
   WEEKLY_SUBMISSION_FAIL,
   WEEKLY_SUMMARY_SUCCESS,
-  WEEKLY_SUMMARY_FAIL
+  WEEKLY_SUMMARY_FAIL,
+  CALORIES_SUCCESS,
+  CALORIES_FAIL,
+  STEPS_SUCCESS,
+  STEPS_FAIL,
 } from "../actions/authAction";
 
 const initialState = {
   user: {},
   errors: {},
   summary: {},
-  weeklySubmissions: {}
+  weeklySubmissions: {},
+  calories: {},
+  steps: {},
 };
 
 export default function (state = initialState, action) {
@@ -51,15 +57,35 @@ export default function (state = initialState, action) {
         errors: true,
       };
     case WEEKLY_SUMMARY_SUCCESS:
-      return{
+      return {
         ...state,
-        summary: action.payload
-      }
+        summary: action.payload,
+      };
     case WEEKLY_SUMMARY_FAIL:
-      return{
+      return {
         ...state,
-        errors: true
-      }
+        errors: true,
+      };
+    case CALORIES_SUCCESS:
+      return {
+        ...state,
+        calories: action.payload,
+      };
+    case CALORIES_FAIL:
+      return {
+        ...state,
+        errors: true,
+      };
+    case STEPS_SUCCESS:
+      return {
+        ...state,
+        steps: action.payload,
+      };
+    case STEPS_FAIL:
+      return {
+        ...state,
+        errors: true,
+      };
   }
 
   return state;
