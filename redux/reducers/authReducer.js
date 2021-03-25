@@ -11,6 +11,8 @@ import {
   CALORIES_FAIL,
   STEPS_SUCCESS,
   STEPS_FAIL,
+  ME_SUCCESS,
+  ME_FAIL,
 } from "../actions/authAction";
 
 const initialState = {
@@ -20,12 +22,12 @@ const initialState = {
   weeklySubmissions: {},
   calories: {},
   steps: {},
+  me: {},
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
     case REGISTER_USER_SUCCESS:
-      //console.log({ user: JSON.parse(action.payload) }, "resturning");
       return {
         ...state,
         user: action.payload,
@@ -36,7 +38,6 @@ export default function (state = initialState, action) {
         errors: true,
       };
     case LOGIN_USER_SUCCESS:
-      // console.log({ ...state, user: action.payload }, "resturning");
       return {
         ...state,
         user: action.payload,
@@ -82,6 +83,16 @@ export default function (state = initialState, action) {
         steps: action.payload,
       };
     case STEPS_FAIL:
+      return {
+        ...state,
+        errors: true,
+      };
+    case ME_SUCCESS:
+      return {
+        ...state,
+        me: action.payload,
+      };
+    case ME_FAIL:
       return {
         ...state,
         errors: true,

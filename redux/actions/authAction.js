@@ -10,6 +10,8 @@ export const CALORIES_SUCCESS = "CALORIES_SUCCESS";
 export const CALORIES_FAIL = "CALORIES_FAIL";
 export const STEPS_SUCCESS = "STEPS_SUCCESS";
 export const STEPS_FAIL = "STEPS_FAIL";
+export const ME_SUCCESS = "ME_SUCCESS";
+export const ME_FAIL = "ME_FAIL";
 
 import jwt_decode from "jwt-decode";
 
@@ -287,7 +289,7 @@ export const weeklySubmissions = (token) => {
         console.log("200");
         let weeklySubmissions = await result.json();
         //let header = result.headers.get("X-Auth-Token");
-        console.log("Result Data: ", JSON.stringify(weeklySubmissions));
+        //console.log("Result Data: ", JSON.stringify(weeklySubmissions));
         //console.log("Header: ", header);
         dispatch({
           type: WEEKLY_SUBMISSION_SUCCESS,
@@ -427,6 +429,48 @@ export const dailySteps = (token) => {
         console.log("400");
         dispatch({
           type: STEPS_FAIL,
+        });
+        console.log("REGISTER FAIL");
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const me = (token) => {
+  return async (dispatch) => {
+    // logic to make a post to REGISTER the user
+    try {
+      // const result = await fetch(
+      //   `http://192.168.100.102:3000/api/users/register`,
+      //console.log("Token in POST request: ", token);
+
+      const result = await fetch(`${BASE_URL}/api/users/me`, {
+        method: "GET",
+        headers: {
+          "x-auth-token": token,
+        },
+      });
+      // let resultData = await result.json();
+      // console.log(JSON.stringify(resultData));
+      if (result.status === 200) {
+        console.log("200");
+        let me = await result.json();
+        //let header = result.headers.get("X-Auth-Token");
+        //console.log("Weekly Summary: ",summary);
+        //console.log("Header: ", header);
+        dispatch({
+          type: ME_SUCCESS,
+          payload: { me: me },
+        });
+        return { me: me };
+        //return null;
+      } else {
+        console.log("400");
+        dispatch({
+          type: ME_FAIL,
         });
         console.log("REGISTER FAIL");
         return null;

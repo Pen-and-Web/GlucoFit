@@ -64,6 +64,7 @@ const Home = (navData) => {
   const [token, setToken] = useState("");
   const [percentage, setPercentage] = useState("");
   const [steps, setSteps] = useState("");
+  const [totalSteps, setTotalSteps] = useState("");
   const [stepsPercentage, setStepsPercentage] = useState("");
   const dispatch = useDispatch();
 
@@ -132,6 +133,7 @@ const Home = (navData) => {
         //console.log("console: ", token);
         await weeklySubmissions(token);
         await dailySteps(token);
+        await me(token);
       }
     } catch (error) {
       console.log(error);
@@ -142,12 +144,12 @@ const Home = (navData) => {
     //console.log("token in sub", token);
     dispatch(authAction.weeklySubmissions(token))
       .then(async (response) => {
-        //console.log("Weekly Submission Response:", response);
+        console.log("Weekly Submission Response:", response);
         if (response !== null) {
           // this.setState({
           //   percentage: response.weeklySubmissions["mission%"],
           // });
-          setPercentage(response.weeklySubmissions["mission%"]);
+          setPercentage(response.weeklySubmissions.mission);
           //console.log("Percentage:", percentage);
         } else {
           Alert.alert("Response Failed. Try Again");
@@ -160,10 +162,24 @@ const Home = (navData) => {
     //console.log("token in sub", token);
     dispatch(authAction.dailySteps(token))
       .then(async (response) => {
-        console.log("Daily Steps: ", response);
+        //console.log("Daily Steps: ", response);
         if (response !== null) {
           setSteps(response.steps.todays_steps);
-          setStepsPercentage(response.steps["mission%"]);
+          setStepsPercentage(response.steps.mission);
+        } else {
+          Alert.alert("Response Failed. Try Again");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const me = async (token) => {
+    //console.log("token in sub", token);
+    dispatch(authAction.me(token))
+      .then(async (response) => {
+        console.log("Daily Steps: ", response);
+        if (response !== null) {
+          setTotalSteps(response.me.user.dailyStepGoal);
         } else {
           Alert.alert("Response Failed. Try Again");
         }
@@ -188,7 +204,7 @@ const Home = (navData) => {
     console.log("Fitbit response: ", response);
     if (response?.type === "success") {
       const data = response.params;
-      console.log("Access Token", data);
+      console.log("data:", data);
     }
   }, [response]);
 
@@ -269,7 +285,7 @@ const Home = (navData) => {
               move="bounceInRight"
               image={require("../assets/images/checktodo.png")}
               title="Completed"
-              subtitle="5K out of 10K steps"
+              subtitle={`${steps} out of ${totalSteps} steps`}
               completed={`${stepsPercentage}%`}
             />
           </View>

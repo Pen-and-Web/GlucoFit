@@ -84,124 +84,142 @@ const MissionsScreen = (navData) => {
       .then(async (response) => {
         console.log("Summary in mission screen: ", response.summary.summary);
         var data = [
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
-          {
-            label: "Summary Generation Date",
-            value: "2021-03-17",
-          },
-          {
-            label: "Summary Period",
-            value: "2021-03-08 to 2021-03-14",
-          },
+          ["Summary Generation Date", "2021-03-24"],
+          ["Summary Period", "2021-03-15 to 2021-03-21"],
+          ["Patient", "James O'Donnell"],
+          ["Email Address", "jamesodonnell134@gmail.com"],
+          ["Diabetic Status", "diabetic"],
+          ["Insulin Dependant", "false"],
+          ["Diabetes Data Last Updated", "2021-03-21"],
+          ["7-day AVG Blood Glucose (mmol/L)", 5.4],
+          ["Summary Generation Date", "2021-03-24"],
+          ["Summary Period", "2021-03-15 to 2021-03-21"],
+          ["Patient", "James O'Donnell"],
+          ["Email Address", "jamesodonnell134@gmail.com"],
+          ["Diabetic Status", "diabetic"],
+          ["Insulin Dependant", "false"],
+          ["Diabetes Data Last Updated", "2021-03-21"],
+          ["7-day AVG Blood Glucose (mmol/L)", 5.4],
         ];
+        // var data = [
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        //   {
+        //     label: "Summary Generation Date",
+        //     value: "2021-03-17",
+        //   },
+        //   {
+        //     label: "Summary Period",
+        //     value: "2021-03-08 to 2021-03-14",
+        //   },
+        // ];
 
-        var ws = XLSX.utils.json_to_sheet(data);
+        var ws = XLSX.utils.json_to_sheet(response.summary.summary);
 
         var wb = XLSX.utils.book_new();
-        var wscols = [{ wch: 60 }];
+        var wscols = [{ wch: 40 }, { wch: 100 }];
 
         ws["!cols"] = wscols;
         XLSX.utils.book_append_sheet(wb, ws, "Summary");
