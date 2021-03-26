@@ -26,6 +26,7 @@ import {
 import { generateSecureRandom } from "react-native-securerandom";
 import * as Random from "expo-random";
 import * as Crypto from "expo-crypto";
+import { Entypo } from "@expo/vector-icons";
 import moment from "moment";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -323,7 +324,7 @@ const Home = (navData) => {
           <View style={styles.card2}>
             <Card
               move="bounceInRight"
-              image={require("../assets/images/checkbox.png")}
+              image={require("../assets/images/clock1.png")}
               title="Sedentary Minutes"
               //subtitle={`${percentage}% Completed`}
               completed={`${
