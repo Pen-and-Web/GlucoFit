@@ -37,7 +37,7 @@ const formSchema = yup.object({
 });
 
 const MissionsScreen = (navData) => {
-  console.log("XLSX:", XLSX);
+  //console.log("XLSX:", XLSX);
   const dispatch = useDispatch();
   const mission = useSelector(
     (state) => state.auth.weeklySubmissions.weeklySubmissions
@@ -57,7 +57,7 @@ const MissionsScreen = (navData) => {
   const [diabeticYes, setDiabeticYes] = useState("blue");
   const [diabeticNo, setDiabeticNo] = useState("blue");
 
-  console.log(mission);
+  //console.log(mission);
 
   const loadData = async () => {
     try {
@@ -83,24 +83,24 @@ const MissionsScreen = (navData) => {
     dispatch(authAction.weeklySummary(token))
       .then(async (response) => {
         console.log("Summary in mission screen: ", response.summary.summary);
-        var data = [
-          ["Summary Generation Date", "2021-03-24"],
-          ["Summary Period", "2021-03-15 to 2021-03-21"],
-          ["Patient", "James O'Donnell"],
-          ["Email Address", "jamesodonnell134@gmail.com"],
-          ["Diabetic Status", "diabetic"],
-          ["Insulin Dependant", "false"],
-          ["Diabetes Data Last Updated", "2021-03-21"],
-          ["7-day AVG Blood Glucose (mmol/L)", 5.4],
-          ["Summary Generation Date", "2021-03-24"],
-          ["Summary Period", "2021-03-15 to 2021-03-21"],
-          ["Patient", "James O'Donnell"],
-          ["Email Address", "jamesodonnell134@gmail.com"],
-          ["Diabetic Status", "diabetic"],
-          ["Insulin Dependant", "false"],
-          ["Diabetes Data Last Updated", "2021-03-21"],
-          ["7-day AVG Blood Glucose (mmol/L)", 5.4],
-        ];
+        // var data = [
+        //   ["Summary Generation Date", "2021-03-24"],
+        //   ["Summary Period", "2021-03-15 to 2021-03-21"],
+        //   ["Patient", "James O'Donnell"],
+        //   ["Email Address", "jamesodonnell134@gmail.com"],
+        //   ["Diabetic Status", "diabetic"],
+        //   ["Insulin Dependant", "false"],
+        //   ["Diabetes Data Last Updated", "2021-03-21"],
+        //   ["7-day AVG Blood Glucose (mmol/L)", 5.4],
+        //   ["Summary Generation Date", "2021-03-24"],
+        //   ["Summary Period", "2021-03-15 to 2021-03-21"],
+        //   ["Patient", "James O'Donnell"],
+        //   ["Email Address", "jamesodonnell134@gmail.com"],
+        //   ["Diabetic Status", "diabetic"],
+        //   ["Insulin Dependant", "false"],
+        //   ["Diabetes Data Last Updated", "2021-03-21"],
+        //   ["7-day AVG Blood Glucose (mmol/L)", 5.4],
+        // ];
         // var data = [
         //   {
         //     label: "Summary Generation Date",

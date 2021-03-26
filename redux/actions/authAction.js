@@ -12,6 +12,10 @@ export const STEPS_SUCCESS = "STEPS_SUCCESS";
 export const STEPS_FAIL = "STEPS_FAIL";
 export const ME_SUCCESS = "ME_SUCCESS";
 export const ME_FAIL = "ME_FAIL";
+export const ACTIVITIES_SUCCESS = "ACTIVITIES_SUCCESS";
+export const ACTIVITIES_FAIL = "ACTIVITIES_FAIL";
+export const TODAY_ACTIVITIES_SUCCESS = "TODAY_ACTIVITIES_SUCCESS";
+export const TODAY_ACTIVITIES_FAIL = "TODAY_ACTIVITIES_FAIL";
 
 import jwt_decode from "jwt-decode";
 
@@ -270,7 +274,7 @@ export const weeklySubmissions = (token) => {
     try {
       // const result = await fetch(
       //   `http://192.168.100.102:3000/api/users/register`,
-      console.log("Token in POST request: ", token);
+      //console.log("Token in POST request: ", token);
 
       const result = await fetch(
         `${BASE_URL}/api/bg_readings/weekly_submissions`,
@@ -317,7 +321,7 @@ export const weeklySummary = (token) => {
     try {
       // const result = await fetch(
       //   `http://192.168.100.102:3000/api/users/register`,
-      console.log("Token in POST request: ", token);
+      //console.log("Token in POST request: ", token);
 
       const result = await fetch(`${BASE_URL}/api/summary`, {
         method: "GET",
@@ -361,7 +365,7 @@ export const caloriesBurnt = (token) => {
     try {
       // const result = await fetch(
       //   `http://192.168.100.102:3000/api/users/register`,
-      console.log("Token in POST request: ", token);
+      //console.log("Token in POST request: ", token);
 
       const result = await fetch(`${BASE_URL}/api/activity/todays_calories`, {
         method: "GET",
@@ -403,7 +407,7 @@ export const dailySteps = (token) => {
     try {
       // const result = await fetch(
       //   `http://192.168.100.102:3000/api/users/register`,
-      console.log("Token in POST request: ", token);
+      //console.log("Token in POST request: ", token);
 
       const result = await fetch(`${BASE_URL}/api/activity/todays_steps`, {
         method: "GET",
@@ -471,6 +475,78 @@ export const me = (token) => {
         console.log("400");
         dispatch({
           type: ME_FAIL,
+        });
+        console.log("REGISTER FAIL");
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const lifetimeActivities = (token, id) => {
+  return async (dispatch) => {
+    try {
+      const result = await fetch(
+        `https://api.fitbit.com/1/user/${id}/activities.json`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (result.status === 200) {
+        console.log("200");
+        let lifetimeActivities = await result.json();
+        //console.log("lifetime Activities :", lifetimeActivities);
+        dispatch({
+          type: ACTIVITIES_SUCCESS,
+          payload: { lifetimeActivities: lifetimeActivities },
+        });
+        return { lifetimeActivities: lifetimeActivities };
+      } else {
+        console.log("400");
+        dispatch({
+          type: ACTIVITIES_FAIL,
+        });
+        console.log("REGISTER FAIL");
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};
+
+export const todayActivities = (token, id) => {
+  return async (dispatch) => {
+    try {
+      const result = await fetch(
+        `https://api.fitbit.com/1/user/${id}/activities/date/today.json`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (result.status === 200) {
+        console.log("200");
+        let todayActivities = await result.json();
+        //console.log("today Activities :", todayActivities);
+        dispatch({
+          type: TODAY_ACTIVITIES_SUCCESS,
+          payload: { todayActivities: todayActivities },
+        });
+        return { todayActivities: todayActivities };
+      } else {
+        console.log("400");
+        dispatch({
+          type: TODAY_ACTIVITIES_FAIL,
         });
         console.log("REGISTER FAIL");
         return null;

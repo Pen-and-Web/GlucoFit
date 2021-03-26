@@ -66,6 +66,7 @@ const Home = (navData) => {
   const [steps, setSteps] = useState("");
   const [totalSteps, setTotalSteps] = useState("");
   const [stepsPercentage, setStepsPercentage] = useState("");
+  const [sedentaryMinutes, setSedentaryMinutes] = useState("");
   const dispatch = useDispatch();
 
   const change = (navData) => {
@@ -144,7 +145,7 @@ const Home = (navData) => {
     //console.log("token in sub", token);
     dispatch(authAction.weeklySubmissions(token))
       .then(async (response) => {
-        console.log("Weekly Submission Response:", response);
+        //console.log("Weekly Submission Response:", response);
         if (response !== null) {
           // this.setState({
           //   percentage: response.weeklySubmissions["mission%"],
@@ -177,7 +178,7 @@ const Home = (navData) => {
     //console.log("token in sub", token);
     dispatch(authAction.me(token))
       .then(async (response) => {
-        console.log("Daily Steps: ", response);
+        //console.log("Daily Steps: ", response);
         if (response !== null) {
           setTotalSteps(response.me.user.dailyStepGoal);
         } else {
@@ -187,23 +188,46 @@ const Home = (navData) => {
       .catch((err) => console.log(err));
   };
 
-  // componentDidMount = async () => {
-  //   this.loadData();
-  //   this.fitbit();
+  const lifetimeActivities = async (token, id) => {
+    //console.log("token in sub", token);
+    dispatch(authAction.lifetimeActivities(token, id))
+      .then(async (response) => {
+        console.log("Lifetime Activities: ", response);
+        if (response !== null) {
+          //setTotalSteps(response.me.user.dailyStepGoal);
+        } else {
+          Alert.alert("Response Failed. Try Again");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
-  //   // this.weeklySubmissions(this.state.token);
-  //   //this.change();
-  // };
+  const todayActivities = async (token, id) => {
+    //console.log("token in sub", token);
+    dispatch(authAction.todayActivities(token, id))
+      .then(async (response) => {
+        console.log("Today Activities: ", response);
+        if (response !== null) {
+          setSedentaryMinutes(
+            response.todayActivities.summary.sedentaryMinutes
+          );
+        } else {
+          Alert.alert("Response Failed. Try Again");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     loadData();
-    //weeklySubmissions();
   }, []);
 
   useEffect(() => {
     console.log("Fitbit response: ", response);
     if (response?.type === "success") {
       const data = response.params;
+      lifetimeActivities(data.access_token, data.user_id);
+      todayActivities(data.access_token, data.user_id);
       console.log("data:", data);
     }
   }, [response]);
@@ -279,6 +303,16 @@ const Home = (navData) => {
                 screenchange={() => change()}
               />
             </TouchableOpacity>
+          </View>
+          <View style={styles.card2}>
+            <Card
+              move="bounceInRight"
+              image={require("../assets/images/checkbox.png")}
+              title="Sedentary Minutes"
+              //subtitle={`${percentage}% Completed`}
+              completed={`${sedentaryMinutes}\nmin`}
+              screenchange={() => change()}
+            />
           </View>
           <View style={styles.card2}>
             <Card

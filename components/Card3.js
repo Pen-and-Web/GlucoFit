@@ -8,8 +8,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
 
 function Card3() {
+  const steps = useSelector((state) => state.auth.lifetimeActivities);
+
+  console.log("Card 3: ", steps);
   return (
     <View style={styles.card}>
       <View style={styles.titleContainer}>
@@ -20,16 +24,20 @@ function Card3() {
           source={require("../assets/images/running.jpg")}
           style={styles.image}
         >
-          <Text style={styles.statistics}>10140 steps</Text>
+          <Text style={styles.statistics}>
+            {steps.lifetimeActivities?.lifetime !== undefined
+              ? `${steps.lifetimeActivities?.lifetime?.total?.steps} steps`
+              : `Fitbit \nnot connected`}
+          </Text>
           <View style={styles.date}>
             <Text style={styles.dateText}>{moment().format("D/MM/YY")}</Text>
           </View>
         </ImageBackground>
       </View>
       <View style={styles.description}>
-        <Text style={styles.descriptionText}>
+        {/* <Text style={styles.descriptionText}>
           You have reached your goal of 10k steps!
-        </Text>
+        </Text> */}
       </View>
     </View>
   );

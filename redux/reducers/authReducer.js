@@ -13,6 +13,10 @@ import {
   STEPS_FAIL,
   ME_SUCCESS,
   ME_FAIL,
+  ACTIVITIES_SUCCESS,
+  ACTIVITIES_FAIL,
+  TODAY_ACTIVITIES_SUCCESS,
+  TODAY_ACTIVITIES_FAIL,
 } from "../actions/authAction";
 
 const initialState = {
@@ -23,6 +27,8 @@ const initialState = {
   calories: {},
   steps: {},
   me: {},
+  lifetimeActivities: {},
+  todayActivities: {},
 };
 
 export default function (state = initialState, action) {
@@ -93,6 +99,26 @@ export default function (state = initialState, action) {
         me: action.payload,
       };
     case ME_FAIL:
+      return {
+        ...state,
+        errors: true,
+      };
+    case ACTIVITIES_SUCCESS:
+      return {
+        ...state,
+        lifetimeActivities: action.payload,
+      };
+    case ACTIVITIES_FAIL:
+      return {
+        ...state,
+        errors: true,
+      };
+    case TODAY_ACTIVITIES_SUCCESS:
+      return {
+        ...state,
+        todayActivities: action.payload,
+      };
+    case TODAY_ACTIVITIES_FAIL:
       return {
         ...state,
         errors: true,
