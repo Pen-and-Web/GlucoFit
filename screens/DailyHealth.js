@@ -128,7 +128,13 @@ const DailyHealth = (navData) => {
             <View style={styles.card}>
               <View>
                 <Text style={styles.question}>Are you fasting today?</Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "2%",
+                  }}
+                >
                   <CircleCheckBox
                     innerColor={"blue"}
                     outerColor={"blue"}
@@ -289,6 +295,7 @@ const styles = StyleSheet.create({
   },
   Options: {
     fontSize: 18,
+    marginLeft: "2%",
   },
 
   submitButton: {

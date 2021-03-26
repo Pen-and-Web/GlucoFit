@@ -66,7 +66,10 @@ const Home = (navData) => {
   const [steps, setSteps] = useState("");
   const [totalSteps, setTotalSteps] = useState("");
   const [stepsPercentage, setStepsPercentage] = useState("");
-  const [sedentaryMinutes, setSedentaryMinutes] = useState("");
+  const [sedentaryMinutes, setSedentaryMinutes] = useState(null);
+  const [acronym, setAcronym] = useState("");
+  const [borderColorOne, setBorderColorOne] = useState("#136DF3");
+  const [borderColorTwo, setBorderColorTwo] = useState("#136DF3");
   const dispatch = useDispatch();
 
   const change = (navData) => {
@@ -116,6 +119,8 @@ const Home = (navData) => {
       if (name !== null) {
         let firstword = name.split(" ")[0];
         setName(firstword);
+        let matches = name.match(/\b(\w)/g);
+        setAcronym(matches.join(""));
         // this.setState({
         //   name: firstword,
         // });
@@ -151,6 +156,7 @@ const Home = (navData) => {
           //   percentage: response.weeklySubmissions["mission%"],
           // });
           setPercentage(response.weeklySubmissions.mission);
+
           //console.log("Percentage:", percentage);
         } else {
           Alert.alert("Response Failed. Try Again");
@@ -237,8 +243,17 @@ const Home = (navData) => {
       <View style={styles.containerone}>
         <View style={styles.boxone}></View>
         <View style={styles.boxtwo}>
-          <Text style={styles.name}>Hi, {name}</Text>
-          <Text style={styles.subtitle}>Here is your health.</Text>
+          <View>
+            <Text style={styles.name}>Hi, {name}</Text>
+            <Text style={styles.subtitle}>Here is your health.</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => navData.navigation.navigate("Profile")}
+          >
+            <View style={styles.userLogo}>
+              <Text style={styles.initials}>{acronym}</Text>
+            </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.boxthree}>
           <ImageBackground
@@ -301,6 +316,7 @@ const Home = (navData) => {
                 subtitle={`${percentage}% Completed`}
                 completed={`${percentage}%`}
                 screenchange={() => change()}
+                BorderColor={percentage === "100" ? "green" : "#136DF3"}
               />
             </TouchableOpacity>
           </View>
@@ -310,8 +326,11 @@ const Home = (navData) => {
               image={require("../assets/images/checkbox.png")}
               title="Sedentary Minutes"
               //subtitle={`${percentage}% Completed`}
-              completed={`${sedentaryMinutes}\nmin`}
+              completed={`${
+                sedentaryMinutes === null ? "0" : sedentaryMinutes
+              }\nmin`}
               screenchange={() => change()}
+              BorderColor="#136DF3"
             />
           </View>
           <View style={styles.card2}>
@@ -321,6 +340,7 @@ const Home = (navData) => {
               title="Completed"
               subtitle={`${steps} out of ${totalSteps} steps`}
               completed={`${stepsPercentage}%`}
+              BorderColor={stepsPercentage === "100" ? "green" : "#136DF3"}
             />
           </View>
           {/* <View style={styles.card3}>
@@ -374,6 +394,8 @@ const styles = StyleSheet.create({
   boxtwo: {
     flex: 0.8,
     marginHorizontal: 35,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   boxthree: {
     flex: 2.5,
@@ -447,5 +469,19 @@ const styles = StyleSheet.create({
     width: 120,
     //borderRadius: 10,
     //opacity: 0.5,
+  },
+  userLogo: {
+    backgroundColor: "#bcbec1",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignSelf: "center",
+  },
+  initials: {
+    color: "white",
+    fontSize: 28,
+    alignItems: "center",
   },
 });

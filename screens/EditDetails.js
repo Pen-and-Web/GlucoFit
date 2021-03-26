@@ -151,34 +151,42 @@ const EditDetails = (navData) => {
           >
             <View style={styles.card}>
               <Text style={styles.question}>Full Name:</Text>
-              <TextInput
+              <Text>{name}</Text>
+              {/* <TextInput
                 //label="Email"
                 value={props.values.fullname}
                 onChangeText={props.handleChange("fullname")}
                 placeholder={name}
-              />
+              /> */}
             </View>
             <View style={styles.card}>
               <Text style={styles.question}>Email:</Text>
-              <TextInput
+              <Text>{email}</Text>
+              {/* <TextInput
                 //label="Email"
                 value={props.values.email}
                 onChangeText={props.handleChange("email")}
                 placeholder={email}
-              />
+              /> */}
             </View>
-            <View style={styles.card}>
+            {/* <View style={styles.card}>
               <Text style={styles.question}>Password:</Text>
               <TextInput
                 //label="Email"
                 value={props.values.password}
                 onChangeText={props.handleChange("password")}
               />
-            </View>
+            </View> */}
             <View style={styles.card}>
-              <View>
+              <View style={{ marginBottom: "2%" }}>
                 <Text style={styles.question}>Are you diabetic?</Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "2%",
+                  }}
+                >
                   <CircleCheckBox
                     innerColor={"blue"}
                     outerColor={"blue"}
@@ -227,7 +235,7 @@ const EditDetails = (navData) => {
               </View>
             </View>
             <View style={styles.card}>
-              <View>
+              <View style={{ marginBottom: "2%" }}>
                 <Text style={styles.question}>
                   What is your target glucose level? (1-59)
                 </Text>
@@ -245,9 +253,15 @@ const EditDetails = (navData) => {
               {/* <Counter start={1} onChange={(value) => console.log(value)} /> */}
             </View>
             <View style={styles.card}>
-              <View>
+              <View style={{ marginBottom: "2%" }}>
                 <Text style={styles.question}>Are you a student?</Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "2%",
+                  }}
+                >
                   <CircleCheckBox
                     innerColor={"blue"}
                     outerColor={"blue"}
@@ -296,9 +310,15 @@ const EditDetails = (navData) => {
               </View>
             </View>
             <View style={styles.card}>
-              <View>
+              <View style={{ marginBottom: "2%" }}>
                 <Text style={styles.question}>Are you insulin dependent?</Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "2%",
+                  }}
+                >
                   <CircleCheckBox
                     innerColor={"blue"}
                     outerColor={"blue"}
@@ -347,7 +367,7 @@ const EditDetails = (navData) => {
               </View>
             </View>
             <View style={styles.card}>
-              <View>
+              <View style={{ marginBottom: "2%" }}>
                 <Text style={styles.question}>
                   What is your daily step goal?
                 </Text>
@@ -364,7 +384,7 @@ const EditDetails = (navData) => {
               </View>
             </View>
             <View style={styles.card}>
-              <View>
+              <View style={{ marginBottom: "2%" }}>
                 <Text style={styles.question}>
                   What is your weekly blood glucose submission goal? (0-50)
                 </Text>
@@ -409,7 +429,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     //height: 300,
     //margin: 10,
-    paddingVertical: "2%",
+    //paddingVertical: "2%",
     paddingHorizontal: "2%",
     marginHorizontal: "2%",
     marginVertical: "2%",
@@ -483,6 +503,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "black",
+    //marginVertical: "2%",
   },
   ScrollView: {
     height: "100%",
@@ -494,6 +515,7 @@ const styles = StyleSheet.create({
   },
   Options: {
     fontSize: 18,
+    marginLeft: "2%",
   },
 
   submitButton: {
