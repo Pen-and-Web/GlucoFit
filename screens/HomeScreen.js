@@ -324,7 +324,7 @@ const Home = (navData) => {
           <View style={styles.card2}>
             <Card
               move="bounceInRight"
-              image={require("../assets/images/clock1.png")}
+              image={require("../assets/images/running.png")}
               title="Sedentary Minutes"
               //subtitle={`${percentage}% Completed`}
               completed={`${
