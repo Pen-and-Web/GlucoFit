@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, Button, StyleSheet, LogBox } from "react-native";
+import { View, Image, Button, StyleSheet, LogBox, Alert } from "react-native";
 import { Card, TextInput, Text } from "react-native-paper";
 import {
   //TextInput,
@@ -18,7 +18,7 @@ import * as authAction from "../redux/actions/authAction";
 //LogBox.ignoreAllLogs();
 
 const formSchema = yup.object({
-  glucose_level: yup.number().min(1).max(59),
+  glucose_level: yup.number().min(1).max(50),
   fasting: yup.boolean(),
 });
 
@@ -75,26 +75,16 @@ const DailyHealth = (navData) => {
       }}
       validationSchema={formSchema}
       onSubmit={(glucose_level, fasting, token) => {
-        console.log("Register Screen Payload:", glucose_level);
+        console.log("Register Screen Payload:", fasting);
         //console.log("Token in formik dispatch:", token);
         dispatch(authAction.dailyHealth(glucose_level, fasting, token))
           .then(async (response) => {
-            //console.log("Edit Response:", response);
+            console.log(response);
+            Alert.alert(response.message.message);
             // if (response !== null) {
-            //   try {
-            //     await AsyncStorage.setItem("token", response.token);
-            //     await AsyncStorage.setItem("id", response.resultData._id);
-            //     await AsyncStorage.setItem(
-            //       "name",
-            //       response.resultData.fullname
-            //     );
-            //     await AsyncStorage.setItem("email", response.resultData.email);
-            //     navData.navigation.navigate("Home");
-            //   } catch (err) {
-            //     console.log(err);
-            //   }
+            //   Alert.alert(response.message);
             // } else {
-            //   Alert.alert("Registration Failed. Try Again.");
+            //   Alert.alert("Submission Failed. Try Again.");
             //   //console.log("Response:", response);
             // }
           })

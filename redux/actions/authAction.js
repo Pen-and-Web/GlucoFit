@@ -16,8 +16,13 @@ export const ACTIVITIES_SUCCESS = "ACTIVITIES_SUCCESS";
 export const ACTIVITIES_FAIL = "ACTIVITIES_FAIL";
 export const TODAY_ACTIVITIES_SUCCESS = "TODAY_ACTIVITIES_SUCCESS";
 export const TODAY_ACTIVITIES_FAIL = "TODAY_ACTIVITIES_FAIL";
+export const EDIT_USER_SUCCESS = "EDIT_USER_SUCCESS";
+export const EDIT_USER_FAIL = "EDIT_USER_FAIL";
+export const DAILY_HEALTH_SUCCESS = "DAILY_HEALTH_SUCCESS";
+export const DAILY_HEALTH_FAIL = "DAILY_HEALTH_FAIL";
 
 import jwt_decode from "jwt-decode";
+import { bool } from "yup";
 
 const BASE_URL = "https://gentle-ravine-47650.herokuapp.com";
 
@@ -39,7 +44,7 @@ export const loginUser = ({ email, password }) => {
       });
 
       if (result.status === 200) {
-        console.log("200");
+        console.log("LOGIN_USER_SUCCESS");
         let token = await result.json();
         let decodedData = jwt_decode(token);
         console.log("Decoded :", decodedData);
@@ -49,7 +54,7 @@ export const loginUser = ({ email, password }) => {
         });
         return { decodedData: decodedData, token: token };
       } else {
-        console.log("400");
+        console.log("LOGIN_USER_FAIL");
         dispatch({
           type: LOGIN_USER_FAIL,
         });
@@ -86,7 +91,7 @@ export const registerUser = ({ fullname, email, password }) => {
       });
       //console.log(await result.json());
       if (result.status === 200) {
-        console.log("200");
+        console.log("REGISTER_USER_SUCCESS");
         let resultData = await result.json();
         let header = result.headers.get("X-Auth-Token");
         console.log("Result Data: ", JSON.stringify(resultData));
@@ -98,11 +103,11 @@ export const registerUser = ({ fullname, email, password }) => {
         return { resultData: resultData, token: header };
         //return null;
       } else {
-        console.log("400");
+        console.log("REGISTER_USER_FAIL");
         dispatch({
           type: REGISTER_USER_FAIL,
         });
-        console.log("REGISTER FAIL");
+
         return null;
       }
     } catch (error) {
@@ -148,28 +153,30 @@ export const editUser = ({
           weeklyBGSubmissionGoal,
         }),
       });
-      let resultData = await result.json();
-      console.log(JSON.stringify(resultData));
-      // if (result.status === 200) {
-      //   console.log("200");
-      //   let resultData = await result.json();
-      //   let header = result.headers.get("X-Auth-Token");
-      //   console.log("Result Data: ", JSON.stringify(resultData));
-      //   console.log("Header: ", header);
-      //   dispatch({
-      //     type: REGISTER_USER_SUCCESS,
-      //     payload: { resultData: resultData, token: header },
-      //   });
-      //   return { resultData: resultData, token: header };
-      //   //return null;
-      // } else {
-      //   console.log("400");
-      //   dispatch({
-      //     type: REGISTER_USER_FAIL,
-      //   });
-      //   console.log("REGISTER FAIL");
-      //   return null;
-      // }
+      // let resultData = await result.json();
+      // console.log(JSON.stringify(resultData));
+      if (result.status === 200) {
+        console.log("200");
+        let message = await result.json();
+
+        console.log("Result Data: ", JSON.stringify(message));
+
+        dispatch({
+          type: EDIT_USER_SUCCESS,
+          payload: { message },
+        });
+        return { message };
+        //return null;
+      } else {
+        console.log("EDIT_USER_FAIL");
+        let message = await result.json();
+        dispatch({
+          type: EDIT_USER_FAIL,
+          payload: { message },
+        });
+
+        return { message };
+      }
     } catch (error) {
       console.error(error);
     }
@@ -225,9 +232,15 @@ export const dailyHealth = ({ glucose_level, fasting, token }) => {
     try {
       // const result = await fetch(
       //   `http://192.168.100.102:3000/api/users/register`,
+      if (fasting === true) {
+        fasting = true;
+      } else {
+        fasting = false;
+      }
+      //fasting = Boolean(fasting);
       console.log("Token in POST request: ", token);
       console.log("fasting in POST request: ", fasting);
-      console.log("glucose level in POST request: ", glucose_level);
+      console.log("glucose level in POST request: ", parseInt(glucose_level));
       const result = await fetch(`${BASE_URL}/api/bg_readings/`, {
         method: "POST",
         headers: {
@@ -236,32 +249,34 @@ export const dailyHealth = ({ glucose_level, fasting, token }) => {
           "x-auth-token": token,
         },
         body: JSON.stringify({
-          glucose_level,
           fasting,
+          glucose_level: parseInt(glucose_level),
         }),
       });
-      let resultData = await result.json();
-      console.log(JSON.stringify(resultData));
-      // if (result.status === 200) {
-      //   console.log("200");
-      //   let resultData = await result.json();
-      //   let header = result.headers.get("X-Auth-Token");
-      //   console.log("Result Data: ", JSON.stringify(resultData));
-      //   console.log("Header: ", header);
-      //   dispatch({
-      //     type: REGISTER_USER_SUCCESS,
-      //     payload: { resultData: resultData, token: header },
-      //   });
-      //   return { resultData: resultData, token: header };
-      //   //return null;
-      // } else {
-      //   console.log("400");
-      //   dispatch({
-      //     type: REGISTER_USER_FAIL,
-      //   });
-      //   console.log("REGISTER FAIL");
-      //   return null;
-      // }
+      // let resultData = await result.json();
+      // console.log(resultData);
+      if (result.status === 200) {
+        //console.log("200");
+        let message = await result.json();
+        console.log("DAILY_HEALTH_SUCCESS: ", JSON.stringify(message));
+
+        dispatch({
+          type: DAILY_HEALTH_SUCCESS,
+          payload: { message },
+        });
+        return { message };
+        //return null;
+      } else {
+        let message = await result.json();
+        // console.log("DAILY_HEALTH_SUCCESS: ", );
+        console.log("DAILY_HEALTH_FAIL", JSON.stringify(message));
+        dispatch({
+          type: DAILY_HEALTH_FAIL,
+          payload: { message },
+        });
+
+        return { message };
+      }
     } catch (error) {
       console.error(error);
     }
@@ -290,7 +305,7 @@ export const weeklySubmissions = (token) => {
       // let resultData = await result.json();
       // console.log(JSON.stringify(resultData));
       if (result.status === 200) {
-        console.log("200");
+        console.log("WEEKLY_SUBMISSION_SUCCESS");
         let weeklySubmissions = await result.json();
         //let header = result.headers.get("X-Auth-Token");
         //console.log("Result Data: ", JSON.stringify(weeklySubmissions));
@@ -302,11 +317,11 @@ export const weeklySubmissions = (token) => {
         return { weeklySubmissions };
         //return null;
       } else {
-        console.log("400");
+        console.log("WEEKLY_SUBMISSION_FAIL");
         dispatch({
           type: WEEKLY_SUBMISSION_FAIL,
         });
-        console.log("REGISTER FAIL");
+
         return null;
       }
     } catch (error) {
@@ -334,7 +349,7 @@ export const weeklySummary = (token) => {
       // let resultData = await result.json();
       // console.log(JSON.stringify(resultData));
       if (result.status === 200) {
-        console.log("200");
+        console.log("WEEKLY_SUMMARY_SUCCESS");
         let summary = await result.json();
         //let header = result.headers.get("X-Auth-Token");
         //console.log("Weekly Summary: ",summary);
@@ -346,11 +361,11 @@ export const weeklySummary = (token) => {
         return { summary: summary };
         //return null;
       } else {
-        console.log("400");
+        console.log("WEEKLY_SUMMARY_FAIL");
         dispatch({
           type: WEEKLY_SUMMARY_FAIL,
         });
-        console.log("REGISTER FAIL");
+
         return null;
       }
     } catch (error) {
@@ -376,7 +391,7 @@ export const caloriesBurnt = (token) => {
       // let resultData = await result.json();
       // console.log(JSON.stringify(resultData));
       if (result.status === 200) {
-        console.log("200");
+        console.log("CALORIES_SUCCESS");
         let calories = await result.json();
         //let header = result.headers.get("X-Auth-Token");
         //console.log("Weekly Summary: ",summary);
@@ -388,11 +403,12 @@ export const caloriesBurnt = (token) => {
         return { calories: calories };
         //return null;
       } else {
-        console.log("400");
+        let calories = await result.json();
+        console.log("CALORIES_FAIL: ", calories);
         dispatch({
           type: CALORIES_FAIL,
         });
-        console.log("REGISTER FAIL");
+
         return null;
       }
     } catch (error) {
@@ -418,7 +434,7 @@ export const dailySteps = (token) => {
       // let resultData = await result.json();
       // console.log(JSON.stringify(resultData));
       if (result.status === 200) {
-        console.log("200");
+        console.log("STEPS_SUCCESS");
         let steps = await result.json();
         //let header = result.headers.get("X-Auth-Token");
         //console.log("Weekly Summary: ",summary);
@@ -430,11 +446,12 @@ export const dailySteps = (token) => {
         return { steps: steps };
         //return null;
       } else {
-        console.log("400");
+        let steps = await result.json();
+        console.log("STEPS_FAIL", steps);
         dispatch({
           type: STEPS_FAIL,
         });
-        console.log("REGISTER FAIL");
+
         return null;
       }
     } catch (error) {
@@ -460,7 +477,7 @@ export const me = (token) => {
       // let resultData = await result.json();
       // console.log(JSON.stringify(resultData));
       if (result.status === 200) {
-        console.log("200");
+        console.log("ME_SUCCESS");
         let me = await result.json();
         //let header = result.headers.get("X-Auth-Token");
         //console.log("Weekly Summary: ",summary);
@@ -472,11 +489,11 @@ export const me = (token) => {
         return { me: me };
         //return null;
       } else {
-        console.log("400");
+        console.log("ME_FAIL");
         dispatch({
           type: ME_FAIL,
         });
-        console.log("REGISTER FAIL");
+
         return null;
       }
     } catch (error) {
@@ -499,7 +516,7 @@ export const lifetimeActivities = (token, id) => {
       );
 
       if (result.status === 200) {
-        console.log("200");
+        console.log("ACTIVITIES_SUCCESS");
         let lifetimeActivities = await result.json();
         //console.log("lifetime Activities :", lifetimeActivities);
         dispatch({
@@ -508,11 +525,11 @@ export const lifetimeActivities = (token, id) => {
         });
         return { lifetimeActivities: lifetimeActivities };
       } else {
-        console.log("400");
+        console.log("ACTIVITIES_FAIL");
         dispatch({
           type: ACTIVITIES_FAIL,
         });
-        console.log("REGISTER FAIL");
+
         return null;
       }
     } catch (error) {
@@ -535,7 +552,7 @@ export const todayActivities = (token, id) => {
       );
 
       if (result.status === 200) {
-        console.log("200");
+        console.log("TODAY_ACTIVITIES_SUCCESS");
         let todayActivities = await result.json();
         //console.log("today Activities :", todayActivities);
         dispatch({
@@ -544,11 +561,11 @@ export const todayActivities = (token, id) => {
         });
         return { todayActivities: todayActivities };
       } else {
-        console.log("400");
+        console.log("TODAY_ACTIVITIES_FAIL");
         dispatch({
           type: TODAY_ACTIVITIES_FAIL,
         });
-        console.log("REGISTER FAIL");
+
         return null;
       }
     } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, Button, StyleSheet, LogBox } from "react-native";
+import { View, Image, Button, StyleSheet, LogBox, Alert } from "react-native";
 import { Card, TextInput, Text } from "react-native-paper";
 import {
   //TextInput,
@@ -117,22 +117,12 @@ const EditDetails = (navData) => {
           )
         )
           .then(async (response) => {
-            //console.log("Edit Response:", response);
+            console.log("Edit Response:", response);
+            Alert.alert(response.message.message);
             // if (response !== null) {
-            //   try {
-            //     await AsyncStorage.setItem("token", response.token);
-            //     await AsyncStorage.setItem("id", response.resultData._id);
-            //     await AsyncStorage.setItem(
-            //       "name",
-            //       response.resultData.fullname
-            //     );
-            //     await AsyncStorage.setItem("email", response.resultData.email);
-            //     navData.navigation.navigate("Home");
-            //   } catch (err) {
-            //     console.log(err);
-            //   }
+            //   Alert.alert(response.message);
             // } else {
-            //   Alert.alert("Registration Failed. Try Again.");
+            //   Alert.alert("Submission Failed. Try Again.");
             //   //console.log("Response:", response);
             // }
           })

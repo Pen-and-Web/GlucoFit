@@ -17,6 +17,10 @@ import {
   ACTIVITIES_FAIL,
   TODAY_ACTIVITIES_SUCCESS,
   TODAY_ACTIVITIES_FAIL,
+  DAILY_HEALTH_FAIL,
+  DAILY_HEALTH_SUCCESS,
+  EDIT_USER_FAIL,
+  EDIT_USER_SUCCESS,
 } from "../actions/authAction";
 
 const initialState = {
@@ -29,6 +33,8 @@ const initialState = {
   me: {},
   lifetimeActivities: {},
   todayActivities: {},
+  editUser: {},
+  dailyHealth: {},
 };
 
 export default function (state = initialState, action) {
@@ -119,6 +125,26 @@ export default function (state = initialState, action) {
         todayActivities: action.payload,
       };
     case TODAY_ACTIVITIES_FAIL:
+      return {
+        ...state,
+        errors: true,
+      };
+    case EDIT_USER_SUCCESS:
+      return {
+        ...state,
+        editUser: action.payload,
+      };
+    case EDIT_USER_FAIL:
+      return {
+        ...state,
+        errors: true,
+      };
+    case DAILY_HEALTH_SUCCESS:
+      return {
+        ...state,
+        dailyHealth: action.payload,
+      };
+    case DAILY_HEALTH_FAIL:
       return {
         ...state,
         errors: true,

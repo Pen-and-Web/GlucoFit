@@ -86,6 +86,7 @@ const Home = (navData) => {
       responseType: ResponseType.Token,
       clientId: "22C5BD",
       scopes: ["activity", "sleep", "weight", "profile"],
+      expires_in: "60",
       // For usage in managed apps using the proxy
       redirectUri: makeRedirectUri({
         useProxy,
@@ -160,7 +161,8 @@ const Home = (navData) => {
 
           //console.log("Percentage:", percentage);
         } else {
-          Alert.alert("Response Failed. Try Again");
+          setPercentage(0);
+          //Alert.alert("Response Failed. Try Again");
         }
       })
       .catch((err) => console.log(err));
@@ -175,7 +177,9 @@ const Home = (navData) => {
           setSteps(response.steps.todays_steps);
           setStepsPercentage(response.steps.mission);
         } else {
-          Alert.alert("Response Failed. Try Again");
+          setSteps(0);
+          setStepsPercentage(0);
+          //Alert.alert("Response Failed. Try Again");
         }
       })
       .catch((err) => console.log(err));
@@ -189,7 +193,8 @@ const Home = (navData) => {
         if (response !== null) {
           setTotalSteps(response.me.user.dailyStepGoal);
         } else {
-          Alert.alert("Response Failed. Try Again");
+          setTotalSteps(0);
+          //Alert.alert("Response Failed. Try Again");
         }
       })
       .catch((err) => console.log(err));
@@ -317,7 +322,7 @@ const Home = (navData) => {
                 subtitle={`${percentage}% Completed`}
                 completed={`${percentage}%`}
                 screenchange={() => change()}
-                BorderColor={percentage === "100" ? "green" : "#136DF3"}
+                BorderColor={percentage === 100 ? "green" : "#136DF3"}
               />
             </TouchableOpacity>
           </View>

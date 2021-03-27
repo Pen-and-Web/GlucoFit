@@ -42,7 +42,8 @@ function Card2() {
         if (response !== null) {
           setCalories(response.calories.todays_calories_burned);
         } else {
-          Alert.alert("Response Failed. Try Again");
+          setCalories(0);
+          //Alert.alert("Response Failed. Try Again");
         }
       })
       .catch((err) => console.log(err));
