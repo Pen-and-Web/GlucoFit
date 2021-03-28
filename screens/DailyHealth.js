@@ -39,6 +39,13 @@ const DailyHealth = (navData) => {
   const [diabeticYes, setDiabeticYes] = useState("blue");
   const [diabeticNo, setDiabeticNo] = useState("blue");
 
+  const weeklySubmissions = async () => {
+    console.log("token in sub", token);
+    dispatch(authAction.weeklySubmissions(token))
+      .then(async (response) => {})
+      .catch((err) => console.log(err));
+  };
+
   const loadData = async () => {
     try {
       let name = await AsyncStorage.getItem("name");
@@ -81,6 +88,7 @@ const DailyHealth = (navData) => {
           .then(async (response) => {
             console.log(response);
             Alert.alert(response.message.message);
+            weeklySubmissions();
             // if (response !== null) {
             //   Alert.alert(response.message);
             // } else {

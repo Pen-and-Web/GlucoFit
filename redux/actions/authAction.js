@@ -289,7 +289,7 @@ export const weeklySubmissions = (token) => {
     try {
       // const result = await fetch(
       //   `http://192.168.100.102:3000/api/users/register`,
-      //console.log("Token in POST request: ", token);
+      console.log("Token in POST request: ", token);
 
       const result = await fetch(
         `${BASE_URL}/api/bg_readings/weekly_submissions`,
@@ -317,7 +317,8 @@ export const weeklySubmissions = (token) => {
         return { weeklySubmissions };
         //return null;
       } else {
-        console.log("WEEKLY_SUBMISSION_FAIL");
+        let weeklySubmissions = await result.json();
+        console.log("WEEKLY_SUBMISSION_FAIL", weeklySubmissions);
         dispatch({
           type: WEEKLY_SUBMISSION_FAIL,
         });

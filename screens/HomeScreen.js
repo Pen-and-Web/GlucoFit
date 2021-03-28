@@ -14,7 +14,7 @@ import Card from "../components/Card";
 import Day from "../components/Day";
 import Card2 from "../components/Card2";
 import AsyncStorage from "@react-native-community/async-storage";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import * as authAction from "../redux/actions/authAction";
 import * as WebBrowser from "expo-web-browser";
 import {
@@ -72,6 +72,10 @@ const Home = (navData) => {
   const [borderColorOne, setBorderColorOne] = useState("#136DF3");
   const [borderColorTwo, setBorderColorTwo] = useState("#136DF3");
   const dispatch = useDispatch();
+  const mission = useSelector(
+    (state) => state.auth.weeklySubmissions.weeklySubmissions
+  );
+  console.log(mission?.mission);
 
   const change = (navData) => {
     return navData("Mission");
