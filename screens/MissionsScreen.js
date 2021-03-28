@@ -350,44 +350,81 @@ const MissionsScreen = (navData) => {
             contentContainerStyle={styles.ScrollViewContent}
           >
             <View style={styles.card}>
-              <Text style={styles.title}>Submission Count:</Text>
-              <Text style={styles.value}>{mission.submission_count}</Text>
-              <Text style={styles.title}>Submission Goal:</Text>
-              <Text style={styles.value}>{mission.submission_goal}</Text>
-              <Text style={styles.title}>Previous Week Count:</Text>
-              <Text style={styles.value}>{mission.previous_week_count}</Text>
+              <Text style={styles.title}>
+                Submission Count:{" "}
+                <Text style={styles.value}>{mission.submission_count}</Text>
+              </Text>
+
+              <Text style={styles.title}>
+                Submission Goal:{" "}
+                <Text style={styles.value}>{mission.submission_goal}</Text>
+              </Text>
+
+              <Text style={styles.title}>
+                Previous Week Count:
+                <Text style={styles.value}>{mission.previous_week_count}</Text>
+              </Text>
+
               <Text style={styles.title}>
                 7 Days Average Blood Glucose Level:
+                <Text style={styles.value}>
+                  {mission["7_day_average_bgl_mmol_L"]}
+                </Text>
               </Text>
-              <Text style={styles.value}>
-                {mission["7_day_average_bgl_mmol_L"]}
-              </Text>
+
               <Text style={styles.title}>
                 2 Month Average Blood Glucose Level:
+                <Text style={styles.value}>
+                  {mission["2_month_average_bgl_mmol_L"]}
+                </Text>
               </Text>
-              <Text style={styles.value}>
-                {mission["2_month_average_bgl_mmol_L"]}
+
+              <Text style={styles.title}>
+                Predicted A1c DCCT:
+                <Text style={styles.value}>
+                  {mission["predicted_A1c_DCCT"]}
+                </Text>
               </Text>
-              <Text style={styles.title}>Predicted A1c DCCT:</Text>
-              <Text style={styles.value}>{mission["predicted_A1c_DCCT%"]}</Text>
-              <Text style={styles.title}>Predicted A1c IFFC:</Text>
-              <Text style={styles.value}>
-                {mission["predicted_A1c_IFCC_mmol_mol"]}
+
+              <Text style={styles.title}>
+                Predicted A1c IFFC:
+                <Text style={styles.value}>
+                  {mission["predicted_A1c_IFCC_mmol_mol"]}
+                </Text>
               </Text>
-              <Text style={styles.title}>7 Days Hypos:</Text>
-              <Text style={styles.value}>{mission["7_day_hypos"]}</Text>
-              <Text style={styles.title}>7 Days Hypers:</Text>
-              <Text style={styles.value}>{mission["7_day_hypers"]}</Text>
-              <Text style={styles.title}>Submission Goal Met:</Text>
-              <Text style={styles.value}>
-                {mission.submission_goal_met === true ? "Yes" : "No"}
+
+              <Text style={styles.title}>
+                7 Days Hypos:
+                <Text style={styles.value}>{mission["7_day_hypos"]}</Text>
               </Text>
-              <Text style={styles.title}>Mission:</Text>
-              <Text style={styles.value}>{mission["mission%"]}%</Text>
-              <Text style={styles.title}>Goal Feedback:</Text>
-              <Text style={styles.value}>{mission.goal_feedback}</Text>
-              <Text style={styles.title}>Previous Week Feedback:</Text>
-              <Text style={styles.value}>{mission.previous_week_feedback}</Text>
+
+              <Text style={styles.title}>
+                7 Days Hypers:
+                <Text style={styles.value}>{mission["7_day_hypers"]}</Text>
+              </Text>
+
+              <Text style={styles.title}>
+                Submission Goal Met:
+                <Text style={styles.value}>
+                  {mission.submission_goal_met === true ? "Yes" : "No"}
+                </Text>
+              </Text>
+
+              <Text style={styles.title}>
+                Mission:<Text style={styles.value}>{mission.mission}%</Text>
+              </Text>
+
+              <Text style={styles.title}>
+                Goal Feedback:
+                <Text style={styles.value}>{mission.goal_feedback}</Text>
+              </Text>
+
+              <Text style={styles.title}>
+                Previous Week Feedback:
+                <Text style={styles.value}>
+                  {mission.previous_week_feedback}
+                </Text>
+              </Text>
             </View>
 
             <View style={styles.card}>
@@ -489,6 +526,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "black",
+    marginBottom: "2%",
   },
   value: {
     fontSize: 20,

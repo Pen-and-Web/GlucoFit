@@ -7,7 +7,14 @@ export default class Card extends React.Component {
       <Animatable.View
         animation={this.props.move}
         duration={1500}
-        style={styles.cardone}
+        style={{
+          flex: 1,
+          marginBottom: 15,
+          display: "flex",
+          flexDirection: "row",
+          backgroundColor: this.props.Background,
+          borderRadius: 10,
+        }}
       >
         <TouchableOpacity
           style={styles.box1}

@@ -156,7 +156,7 @@ const Home = (navData) => {
     //console.log("token in sub", token);
     dispatch(authAction.weeklySubmissions(token))
       .then(async (response) => {
-        //console.log("Weekly Submission Response:", response);
+        console.log("Weekly Submission Response:", response);
         if (response !== null) {
           // this.setState({
           //   percentage: response.weeklySubmissions["mission%"],
@@ -327,6 +327,7 @@ const Home = (navData) => {
                 completed={`${percentage}%`}
                 screenchange={() => change()}
                 BorderColor={percentage === 100 ? "green" : "#136DF3"}
+                Background="#add8e6"
               />
             </TouchableOpacity>
           </View>
@@ -341,6 +342,7 @@ const Home = (navData) => {
               }\nmin`}
               screenchange={() => change()}
               BorderColor="#136DF3"
+              Background="white"
             />
           </View>
           <View style={styles.card2}>
@@ -351,6 +353,7 @@ const Home = (navData) => {
               subtitle={`${steps} out of ${totalSteps} steps`}
               completed={`${stepsPercentage}%`}
               BorderColor={stepsPercentage === "100" ? "green" : "#136DF3"}
+              Background="white"
             />
           </View>
           {/* <View style={styles.card3}>
