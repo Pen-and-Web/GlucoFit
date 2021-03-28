@@ -6,18 +6,29 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native-gesture-handler";
+import { useDispatch } from "react-redux";
 import Card2 from "../components/Card2";
 import AsyncStorage from "@react-native-community/async-storage";
+import * as authAction from "../redux/actions/authAction";
 
 const ProfileScreen = (navData) => {
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [acronym, setAcronym] = useState("");
+  const [fitbitToken, setFitbitToken] = useState("");
 
-  const signOut = async () => {
+  const signOut = async (fitbitToken) => {
+    console.log("Fitbit Token in profile screen: ", fitbitToken);
+    dispatch(authAction.revokeFitbit(fitbitToken))
+      .then(async (response) => {
+        //console.log("Today Activities: ", response);
+      })
+      .catch((err) => console.log(err));
     try {
       await AsyncStorage.removeItem("email");
       await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("fitbitToken");
       await AsyncStorage.removeItem("id");
       await AsyncStorage.removeItem("name");
       navData.navigation.navigate("Login");
@@ -30,6 +41,7 @@ const ProfileScreen = (navData) => {
     try {
       let name = await AsyncStorage.getItem("name");
       let email = await AsyncStorage.getItem("email");
+      let fitbitToken = await AsyncStorage.getItem("fitbitToken");
       if (name !== null) {
         setName(name);
         let matches = name.match(/\b(\w)/g);
@@ -37,6 +49,10 @@ const ProfileScreen = (navData) => {
       }
       if (email !== null) {
         setEmail(email);
+      }
+      if (fitbitToken !== null) {
+        setFitbitToken(fitbitToken);
+        console.log("Get Fitbit Token: ", fitbitToken);
       }
     } catch (error) {
       console.log(error);
@@ -74,7 +90,7 @@ const ProfileScreen = (navData) => {
           </TouchableOpacity>
         </View>
         <View style={styles.button}>
-          <TouchableOpacity onPress={signOut}>
+          <TouchableOpacity onPress={() => signOut(fitbitToken)}>
             <Text style={styles.signoutText}>SIGN OUT</Text>
           </TouchableOpacity>
         </View>

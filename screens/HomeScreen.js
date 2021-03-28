@@ -90,7 +90,7 @@ const Home = (navData) => {
       responseType: ResponseType.Token,
       clientId: "22C5BD",
       scopes: ["activity", "sleep", "weight", "profile"],
-      expires_in: "60",
+      expires_in: "3600",
       // For usage in managed apps using the proxy
       redirectUri: makeRedirectUri({
         useProxy,
@@ -234,6 +234,17 @@ const Home = (navData) => {
       .catch((err) => console.log(err));
   };
 
+  const setFitbitToken = async (token) => {
+    //console.log("token in sub", token);
+    try {
+      await AsyncStorage.setItem("fitbitToken", token);
+
+      //navData.navigation.navigate("Home");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     loadData();
   }, []);
@@ -244,6 +255,8 @@ const Home = (navData) => {
       const data = response.params;
       lifetimeActivities(data.access_token, data.user_id);
       todayActivities(data.access_token, data.user_id);
+      setFitbitToken(data.access_token);
+
       console.log("data:", data);
     }
   }, [response]);

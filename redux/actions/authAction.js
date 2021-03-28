@@ -574,3 +574,44 @@ export const todayActivities = (token, id) => {
     }
   };
 };
+
+export const revokeFitbit = (token) => {
+  console.log("Fitbit token in auth action:", token);
+  return async (dispatch) => {
+    try {
+      const formData = new FormData();
+      formData.append("token", token);
+
+      const result = await fetch(`https://api.fitbit.com/oauth2/revoke`, {
+        method: "POST",
+        headers: {
+          //Authorization: `Basic MjJDNUJEOjU1ZTVjMmU0OTFlYmJlZWVmOGQ2NTIwM2UxOGJiZTM4`,
+          Authorization: `Basic MjJDNVZEOmU0MjVmNzk4ZDhjNWE4NzA5OTVmNWM4NmQ5ZTQxMTkw`,
+        },
+        body: formData,
+      });
+
+      let revoke = await result.json();
+      console.log("Revoke :", revoke);
+      // if (result.status === 200) {
+      //   console.log("TODAY_ACTIVITIES_SUCCESS");
+      //   let todayActivities = await result.json();
+      //   //console.log("today Activities :", todayActivities);
+      //   dispatch({
+      //     type: TODAY_ACTIVITIES_SUCCESS,
+      //     payload: { todayActivities: todayActivities },
+      //   });
+      //   return { todayActivities: todayActivities };
+      // } else {
+      //   console.log("TODAY_ACTIVITIES_FAIL");
+      //   dispatch({
+      //     type: TODAY_ACTIVITIES_FAIL,
+      //   });
+
+      //   return null;
+      // }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+};

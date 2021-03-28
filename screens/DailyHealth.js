@@ -27,6 +27,7 @@ const DailyHealth = (navData) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
+
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editPassword, setEditPassword] = useState("");
@@ -51,6 +52,7 @@ const DailyHealth = (navData) => {
       let name = await AsyncStorage.getItem("name");
       let email = await AsyncStorage.getItem("email");
       let token = await AsyncStorage.getItem("token");
+
       if (name !== null) {
         setName(name);
       }
