@@ -585,8 +585,8 @@ export const revokeFitbit = (token) => {
       const result = await fetch(`https://api.fitbit.com/oauth2/revoke`, {
         method: "POST",
         headers: {
-          //Authorization: `Basic MjJDNUJEOjU1ZTVjMmU0OTFlYmJlZWVmOGQ2NTIwM2UxOGJiZTM4`,
-          Authorization: `Basic MjJDNVZEOmU0MjVmNzk4ZDhjNWE4NzA5OTVmNWM4NmQ5ZTQxMTkw`,
+          Authorization: `Basic MjJDNUJEOjU1ZTVjMmU0OTFlYmJlZWVmOGQ2NTIwM2UxOGJiZTM4`,
+          // Authorization: `Basic MjJDNVZEOmU0MjVmNzk4ZDhjNWE4NzA5OTVmNWM4NmQ5ZTQxMTkw`,
         },
         body: formData,
       });
